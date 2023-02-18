@@ -23,7 +23,7 @@ const DetailsRow = (props: Props) => {
         <StatItem title="Oracle Price" value={10.00}/>
         <StatItem title="24hr Change" value={"2.00 %"}/>
         <StatItem title="24hr Volume" value={"$ 0.00"}/>
-        <StatItem title="24hr Volume" value={"$ 0.00"}/>
+        <StatItem title="Daily Change" value={"1.00%"}/>
     </div>
   )
 }
