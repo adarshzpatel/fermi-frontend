@@ -17,9 +17,7 @@ const Navbar = (props: Props) => {
     <>
       <header className={styles.header}>
         <nav className={styles.nav}>
-          <NextLink href="/">
             <Logo />
-          </NextLink>
           <div className="flex gap-4 items-center">
 
           <NextLink href="/trade" className="hover:bg-gray-800 text-gray-400 font-medium p-2 px-4 ease-out duration-200 rounded-lg">

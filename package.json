@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@project-serum/anchor": "^0.26.0",
+    "@project-serum/serum": "^0.13.65",
     "@radix-ui/react-select": "^1.2.0",
     "@radix-ui/react-tabs": "^1.0.2",
+    "@solana/spl-token": "^0.3.7",
     "@solana/wallet-adapter-base": "^0.9.3",
     "@solana/wallet-adapter-react": "^0.15.3",
     "@solana/wallet-adapter-react-ui": "^0.9.5",
@@ -25,13 +27,15 @@
     "cva": "^0.0.0",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
+    "fs": "^0.0.1-security",
     "lightweight-charts": "^4.0.0",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.7.1",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "zustand": "^4.3.3"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
