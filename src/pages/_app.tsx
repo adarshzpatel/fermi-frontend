@@ -9,8 +9,11 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { Toaster } from "react-hot-toast";
+import { GlobalStateProvider } from "@components/contexts/global";
 
-const RPC_ENDPOINT = "https://solana-devnet.g.alchemy.com/v2/3Ryr3JTOoA9OXvc_5lpw5gn2YOZ-ukJG";
+const RPC_ENDPOINT =
+  "https://solana-devnet.g.alchemy.com/v2/3Ryr3JTOoA9OXvc_5lpw5gn2YOZ-ukJG";
 // const RPC_ENDPOINT = "http://localhost:8899"
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -25,14 +28,17 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <ConnectionProvider
         endpoint={RPC_ENDPOINT}
-        config={{ commitment: "confirmed"}}
+        config={{ commitment: "confirmed" }}
       >
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             {mounted && (
-              <AppContainer>
-                <Component {...pageProps} />
-              </AppContainer>
+              <GlobalStateProvider>
+                <AppContainer>
+                  <Toaster position="bottom-left" />
+                  <Component {...pageProps} />
+                </AppContainer>
+              </GlobalStateProvider>
             )}
           </WalletModalProvider>
         </WalletProvider>
