@@ -1,44 +1,148 @@
-import React, { useState } from 'react'
-import Button from '@components/ui/Button'
-import { Input } from '@components/ui/Input'
-
-type Props = {}
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import Button from "@components/ui/Button";
+import { Input } from "@components/ui/Input";
+import * as anchor from "@project-serum/anchor";
+import { useGlobalState } from "src/hooks/useGlobalState";
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
+type Props = {};
 
 enum Switch {
-  BUY,
-  SELL
+  ASK,
+  BID,
 }
 
 const BuySell = (props: Props) => {
-  const [state,setState] = useState<Switch>(Switch.BUY)
+  const [state, setState] = useState<Switch>(Switch.BID);
+  const [type, setType] = useState("Limit");
+  const [price, setPrice] = useState(0);
+  const [size, setSize] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+  const wallet = useWallet();
+  const { connection } = useConnection();
+  const {
+    program,
+    pdas: { asksPda, bidsPda, eventQPda, marketPda, openOrdersPda, reqQPda },
+    coinMint,
+    coinVault,
+    authorityCoinTokenAccount,
+    authorityPcTokenAccount,
+    pcMint,
+    pcVault,
+    isConnected,
+  } = useGlobalState();
 
+  const { publicKey } = useWallet();
 
-  return (    
+  const createNewBidOrder = async (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const limitPrice = new anchor.BN(price);
+    const maxCoinQty = new anchor.BN(size);
+    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
+    console.log({limitPrice,maxCoinQty,maxNativePcQty})
+    if (  
+      !limitPrice ||
+      !maxCoinQty ||
+      !marketPda ||
+      !coinMint ||
+      !pcMint ||
+      !coinVault ||
+      !pcVault ||
+      !openOrdersPda ||
+      !wallet ||
+      !bidsPda ||
+      !asksPda ||
+      !reqQPda ||
+      !eventQPda ||
+      !publicKey
+    ){
+      alert("Insufficient data")
+      return
+    }
+
+    try {
+      const tx = await program?.methods
+        .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
+          limit: {},
+        })
+        .accounts({
+          openOrders: openOrdersPda,
+          market: marketPda,
+          coinVault,
+          pcVault,
+          coinMint: coinMint?.publicKey,
+          pcMint: pcMint?.publicKey,
+          payer: publicKey,
+          bids: bidsPda,
+          asks: asksPda,
+          reqQ: reqQPda,
+          eventQ: eventQPda,
+          authority: publicKey,
+        })
+        .signers([publicKey])
+        .rpc();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const createNewAskOrder = async (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const limitPrice = new anchor.BN(price);
+    const maxCoinQty = new anchor.BN(size);
+    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
+    console.log({limitPrice,maxCoinQty,maxNativePcQty})
+  };
+
+  return (
     <div className="border flex flex-col border-gray-700 rounded-lg">
-          {/* BUY / SELL */}
-          <h6 className=" p-4 font-bold text-center text-xl">SOL-PERP</h6>
-          <div className="bg-gray-800 font-bold text-center gap-1 p-1 grid grid-cols-2 ">
-            <button onClick={()=>setState(Switch.BUY)} className={`${state === Switch.BUY ? "bg-green-600" : "hover:bg-gray-700"} rounded-md py-1`}>BUY</button>
-            <button onClick={()=>setState(Switch.SELL)} className={`${state === Switch.SELL ? "bg-red-600" : "hover:bg-gray-700"} rounded-md py-1`}>SELL</button>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mt-2 p-4">
-            <Input label="Type" labelClassNames="text-sm" />
-            <Input label="Price" labelClassNames="text-sm" />
-            <Input label="Size" labelClassNames="text-sm" />
-            <Input label="Quantity" labelClassNames="text-sm" />
-            <div className="col-span-2 flex mt-2 items-center justify-center gap-1.5  text-xs rounded-lg bg-gray-700">
-              <button className="hover:bg-gray-800 p-2">10%</button>
-              <button className="hover:bg-gray-800 p-2">25%</button>
-              <button className="hover:bg-gray-800 p-2">50%</button>
-              <button className="hover:bg-gray-800 p-2">75%</button>
-              <button className="hover:bg-gray-800 p-2">100%</button>
-            </div>
-          </div>
-          <Button variant="primary" className="mx-4 mb-4">
-            {state === Switch.BUY ? "BUY" : "SELL"} SOL
-          </Button>
-        </div>
-  )
-}
+      {/* BUY / SELL */}
+      <h6 className=" p-4 font-bold text-center text-xl">SOL-PERP</h6>
+      <div className="bg-gray-800 font-bold text-center gap-1 p-1 grid grid-cols-2 ">
+        <button
+          onClick={() => setState(Switch.BID)}
+          className={`${
+            state === Switch.BID ? "bg-green-600" : "hover:bg-gray-700"
+          } rounded-md py-1`}
+        >
+          BID
+        </button>
+        <button
+          onClick={() => setState(Switch.ASK)}
+          className={`${
+            state === Switch.ASK ? "bg-red-600" : "hover:bg-gray-700"
+          } rounded-md py-1`}
+        >
+          ASK
+        </button>
+      </div>
+      <form onSubmit={state === Switch.ASK ? createNewAskOrder : createNewBidOrder} className="flex flex-col gap-2 mt-2 p-4">
+        <Input readOnly label="Type" labelClassNames="text-sm " defaultValue={"Limit"} className="cols-span-1"/>
+        <Input label="Price" labelClassNames="text-sm" value={price} onChange={((e)=>setPrice(Number(e.target.value)))} type="number" min={0} />
+        <Input
+          label="Size (amount of USDC)"
+          labelClassNames="text-sm"
+          type="number"
+          min={0}
+          value={size} onChange={((e)=>setSize(Number(e.target.value)))}
+        />
+        <Input label="Quantity(amount of SOL)" labelClassNames="text-sm" value={quantity} onChange={((e)=>setQuantity(Number(e.target.value)))}/>
+        {/* <div className="col-span-2 flex mt-2 items-center justify-center gap-1.5  text-xs rounded-lg bg-gray-700">
+          <button type="button" className="hover:bg-gray-800 p-2">10%</button>
+          <button className="hover:bg-gray-800 p-2">25%</button>
+          <button className="hover:bg-gray-800 p-2">50%</button>
+          <button className="hover:bg-gray-800 p-2">75%</button>
+          <button className="hover:bg-gray-800 p-2">100%</button>
+        </div> */}
+        <Button variant="primary" className="mt-4 w-full ">
+          {state === Switch.ASK ? "BID" : "ASK"} SOL
+        </Button>
+      </form>
+    </div>
+  );
+};
 
-export default BuySell
+export default BuySell;

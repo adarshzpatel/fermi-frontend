@@ -1,9 +1,11 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import { Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { Keypair, LAMPORTS_PER_SOL, PublicKey, Transaction } from "@solana/web3.js";
+import * as spl from "@solana/spl-token";
 import {
   AnchorWallet,
   useAnchorWallet,
   useConnection,
+  useWallet,
 } from "@solana/wallet-adapter-react";
 import {
   getAsksPda,
@@ -31,21 +33,18 @@ type PdasType = {
 
 type GlobalContextType = {
   isConnected: boolean;
-  wallet: AnchorWallet | undefined;
   pdas: PdasType;
   program: anchor.Program<SimpleSerum> | null;
   coinMint: Keypair | null;
   pcMint: Keypair | null;
   coinVault: PublicKey | null;
   pcVault: PublicKey | null;
-  authority: Keypair | null;
   authorityCoinTokenAccount: PublicKey | null;
   authorityPcTokenAccount: PublicKey | null;
 };
 
 export const GlobalContext = createContext<GlobalContextType>({
   isConnected: false,
-  wallet: undefined,
   pdas: {
     marketPda: null,
     bidsPda: null,
@@ -59,7 +58,6 @@ export const GlobalContext = createContext<GlobalContextType>({
   pcMint: null,
   coinVault: null,
   pcVault: null,
-  authority: null,
   authorityCoinTokenAccount: null,
   authorityPcTokenAccount: null,
 });
@@ -87,44 +85,45 @@ export const GlobalStateProvider = ({ children }: Props) => {
   const [pcMint, setPcMint] = useState<Keypair | null>(
     anchor.web3.Keypair.generate()
   );
-  const [authority, setAuthority] = useState<Keypair | null>(
-    anchor.web3.Keypair.generate()
-  );
+
   const [coinVault, setCoinVault] = useState<PublicKey | null>(null);
   const [pcVault, setPcVault] = useState<PublicKey | null>(null);
+  const [authorityPcTokenAccount, setAuthorityPcTokenAccount] = useState<PublicKey|null>(null);
   const [authorityCoinTokenAccount, setAuthorityCoinTokenAccount] =
-    useState(null);
-  const [authorityPcTokenAccount, setAuthorityPcTokenAccount] = useState(null);
+    useState<PublicKey|null>(null);
 
   const { connection } = useConnection();
-  const wallet = useAnchorWallet();
-
+  const anchorWallet = useAnchorWallet();
+  // get public key from wallet adatpter
+  const {publicKey,signTransaction,sendTransaction} = useWallet()
   // set program
   useEffect(() => {
-    if (connection && wallet) {
-      setProgram(getProgram(getProvider(connection,wallet)));
+    if (connection && anchorWallet) {
+      setProgram(getProgram(getProvider(connection, anchorWallet)));
     } else {
       setProgram(null);
     }
-  }, [connection, wallet]);
+  }, [connection,anchorWallet ]);
 
   // Check wallet connection
   useEffect(() => {
-    setIsConnected(!!wallet?.publicKey);
-  }, [wallet]);
+    setIsConnected(!!anchorWallet?.publicKey);
+  }, [anchorWallet]);
 
   // get pdas
   useEffect(() => {
-    const getPdas = () => {
-      if (!program || !coinMint || !pcMint || !authority) return;
+    const getPdas = async () => {
+      if (!program || !coinMint || !pcMint || !anchorWallet) return;
       try {
+        // get pdas
         const marketPda = getMarketPda(coinMint, pcMint, program);
         const bidsPda = getBidsPda(marketPda, program);
         const asksPda = getAsksPda(marketPda, program);
         const eventQPda = getEventQPda(marketPda, program);
         const reqQPda = getReqQPda(marketPda, program);
-        const openOrdersPda = getOpenOrdersPda(marketPda, authority, program);
+        const openOrdersPda = getOpenOrdersPda(marketPda, anchorWallet, program);
 
+        // set pdas
         setPdas({
           marketPda,
           asksPda,
@@ -133,93 +132,65 @@ export const GlobalStateProvider = ({ children }: Props) => {
           openOrdersPda,
           reqQPda,
         });
+        
+        // get vault addresses
+        const _coinVault = await spl.getAssociatedTokenAddress(
+          coinMint.publicKey,
+          marketPda,
+          true
+        );
 
-       
+        const _pcVault = await spl.getAssociatedTokenAddress(
+          pcMint.publicKey,
+          marketPda,
+          true
+        );
+          
+        // Set vaults
+        setCoinVault(_coinVault);
+        setPcVault(_pcVault);
+        
+        // get aurhority token accounts 
+        const _authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(coinMint?.publicKey,anchorWallet?.publicKey,false)
+        const _authorityPcTokenAccount = await spl.getAssociatedTokenAddress(pcMint?.publicKey,anchorWallet?.publicKey,false)
+        setAuthorityCoinTokenAccount(_authorityCoinTokenAccount)
+        setAuthorityPcTokenAccount(_authorityPcTokenAccount)
+        if(!coinVault || !pcVault || !publicKey) return 
+        
+        console.log(coinVault,pcVault,pdas,authorityCoinTokenAccount,authorityPcTokenAccount)
+        // initialize market
+
+        
+        //   await program?.methods?.initializeMarket(new anchor.BN('1000000000'), new anchor.BN('1000000')).accounts({
+        //     market:marketPda,
+        //     coinVault,
+        //     pcVault,
+        //   coinMint:coinMint.publicKey,
+        //   pcMint:pcMint.publicKey,
+        //   bids:bidsPda,
+        //   asks:asksPda,
+        //   reqQ:reqQPda,
+        //   eventQ:eventQPda,
+        //   authority:publicKey
+        // }).signers([publicKey]).rpc()
+
+        
       } catch (err) {
         console.log(err);
       } finally {
+
       }
-    };
-    if (!pdas?.marketPda && program) {
+    }
+    if (program) {
       getPdas();
     }
-  }, [pdas, program, authority, coinMint, pcMint]);
+  }, [program,publicKey]);
 
-
-  // const setupVaults = () => {
-
-  // }
-  // // setup vaults 
-  // useEffect(()=>{
-  //   coinVault = await spl.getAssociatedTokenAddress(
-  //     coinMint.publicKey,
-  //     marketPda,
-  //     true,
-  //   );
-  //   pcVault = await spl.getAssociatedTokenAddress(
-  //     pcMint.publicKey,
-  //     marketPda,
-  //     true,
-  //   ); 
-  // })
-  // initialize market
-
-
-  // TODO : get coin vault and pc vault
-  const initializeMarket = async () => {
-    if (!wallet) return;
-
-    try {
-      const provider = getProvider(connection, wallet);
-      const program = getProgram(provider);
-      const { marketPda, bidsPda, asksPda, reqQPda, eventQPda } = pdas;
-      if (
-        !marketPda ||
-        !coinMint ||
-        !coinVault ||
-        !pcVault ||
-        !pcMint ||
-        !bidsPda ||
-        !asksPda ||
-        !reqQPda ||
-        !eventQPda || !authority
-      )
-       throw new Error("Insufficient data")
-
-      await program.methods
-        .initializeMarket(new anchor.BN("1000000000"), new anchor.BN("1000000"))
-        .accounts({
-          market: marketPda,
-          coinVault,
-          pcVault,
-          coinMint: coinMint?.publicKey,
-          pcMint: pcMint?.publicKey,
-          bids: bidsPda,
-          asks: asksPda,
-          reqQ: reqQPda,
-          eventQ: eventQPda,
-          authority: authority?.publicKey,
-        })
-        .signers([authority])
-        .rpc();
-
-        const market = await program.account.market.fetch(marketPda);
-        console.log(market)
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-
-
-
-  
 
   return (
     <GlobalContext.Provider
       value={{
         pdas,
-        authority,
         authorityCoinTokenAccount,
         authorityPcTokenAccount,
         coinMint,
@@ -227,7 +198,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
         isConnected,
         pcMint,
         pcVault,
-        wallet,
+
         program,
       }}
     >

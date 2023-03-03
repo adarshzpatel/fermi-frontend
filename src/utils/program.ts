@@ -148,7 +148,7 @@ export const getEventQPda = (marketPda:PublicKey,program:Program<SimpleSerum>) =
   )[0];
 }
 
-export const getOpenOrdersPda = (marketPda:PublicKey,authority:Keypair,program:Program<SimpleSerum>) => {
+export const getOpenOrdersPda = (marketPda:PublicKey,authority:AnchorWallet,program:Program<SimpleSerum>) => {
   return anchor.web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from('open-orders', 'utf-8'),

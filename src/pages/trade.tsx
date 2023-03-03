@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/Tabs";
 
 const Trade = (props: Props) => {
   const [pair, setPair] = useState<string>("SOL/USDT");
+  
   return (
     <div>
       <div className="mb-4 border-gray-700">
