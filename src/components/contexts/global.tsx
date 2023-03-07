@@ -33,5 +33,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
     }
   }, [connection,anchorWallet]);
 
+
+
   return <GlobalContext.Provider value={{program}}>{children}</GlobalContext.Provider>;
 };

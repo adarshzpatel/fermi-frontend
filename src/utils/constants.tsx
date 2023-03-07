@@ -1,3 +1,4 @@
+export const PROGRAM_ADDRESS = "HTbkjiBvVXMBWRFs4L56fSWaHpX343ZQGzY4htPQ5ver"
 export const openOrdersPda = "8XEh8WvAawuCwqtiCXVGu9Fdty36z6S2XXh8BjjBg8J4";
 export const marketPda = "EVovHAcuZ1vLdMVFRqpmcX1ezwARBr44o6WZ7wz61Tpt";
 export const coinVault = "5hWVevFB1gkh8SDieZmfwcPvUxLyEff7xFNEBM7VnW3G";

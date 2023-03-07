@@ -2,12 +2,13 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import Button from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import * as anchor from "@project-serum/anchor";
-import { useGlobalState } from "src/hooks/useGlobalState";
+import { useGlobalState } from "@components/ui/hooks/useGlobalState";
 import {
   useAnchorWallet,
   useConnection,
   useWallet,
 } from "@solana/wallet-adapter-react";
+import useTestMarket from "@components/ui/hooks/useTestMarket";
 type Props = {};
 
 enum Switch {
@@ -21,9 +22,14 @@ const BuySell = (props: Props) => {
   const [price, setPrice] = useState(0);
   const [size, setSize] = useState(0);
   const [quantity, setQuantity] = useState(0);
-
+  const {createNewBid} = useTestMarket()
+  
   const createNewBidOrder = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const limitPrice = new anchor.BN(price);
+    const maxCoinQty = new anchor.BN(size);
+    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
+    await createNewBid(limitPrice,maxCoinQty,maxNativePcQty)
   }
   
   const createNewAskOrder = async (e:FormEvent<HTMLFormElement>) => {
@@ -58,12 +64,11 @@ const BuySell = (props: Props) => {
       </div>
       <form onSubmit={state === Switch.ASK ? createNewAskOrder : createNewBidOrder} className="flex flex-col gap-2 mt-2 p-4">
         <Input readOnly label="Type" labelClassNames="text-sm " defaultValue={"Limit"} className="cols-span-1"/>
-        <Input label="Price" labelClassNames="text-sm" value={price} onChange={((e)=>setPrice(Number(e.target.value)))} type="number" min={0} />
+        <Input label="Price" labelClassNames="text-sm" value={price} onChange={((e)=>setPrice(Number(e.target.value)))} type="number"  />
         <Input
           label="Size (amount of USDC)"
           labelClassNames="text-sm"
           type="number"
-          min={0}
           value={size} onChange={((e)=>setSize(Number(e.target.value)))}
         />
         <Input label="Quantity(amount of SOL)" labelClassNames="text-sm" value={quantity} onChange={((e)=>setQuantity(Number(e.target.value)))}/>
@@ -74,8 +79,8 @@ const BuySell = (props: Props) => {
           <button className="hover:bg-gray-800 p-2">75%</button>
           <button className="hover:bg-gray-800 p-2">100%</button>
         </div> */}
-        <Button variant="primary" className="mt-4 w-full ">
-          {state === Switch.ASK ? "BID" : "ASK"} SOL
+        <Button variant='primary' className="mt-4 w-full ">
+          {state === Switch.ASK ? "ASK" : "BID" }
         </Button>
       </form>
     </div>

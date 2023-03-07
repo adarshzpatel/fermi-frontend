@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useGlobalState } from "src/hooks/useGlobalState";
+import { useGlobalState } from "@components/ui/hooks/useGlobalState";
 
 export default function Home() {
   const state = useGlobalState()

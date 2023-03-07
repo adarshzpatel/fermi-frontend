@@ -1,8 +1,5 @@
-import { PublicKey } from "@solana/web3.js";
-import { useEffect, useState } from "react";
 import { FiTrendingUp } from "react-icons/fi";
-import { useGlobalState } from "src/hooks/useGlobalState";
-import useTestMarket from "src/hooks/useTestMarket";
+import useTestMarket from "@components/ui/hooks/useTestMarket";
 
 type Props = {};
 

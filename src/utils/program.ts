@@ -10,12 +10,12 @@ import { IDL, SimpleSerum } from "../idl/simple_serum";
 import { AnchorWallet } from "@solana/wallet-adapter-react";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
+import { PROGRAM_ADDRESS } from "./constants";
 
 export const priceFromOrderId = (orderId:anchor.BN) => {
   return Number((BigInt(orderId.toString()) >> BigInt(64)).toString()).toFixed(2);
 }
 
-export const PROGRAM_ADDRESS = "HTbkjiBvVXMBWRFs4L56fSWaHpX343ZQGzY4htPQ5ver"
 
 export const getProgramId = () => new PublicKey(PROGRAM_ADDRESS)
 
@@ -113,54 +113,4 @@ export const mintTo = async (
     spl.createMintToInstruction(mint, ta, provider.wallet.publicKey, amount, [])
   );
   await provider.sendAndConfirm(tx, []);
-};
-
-export const getMarketPda = (coinMint:Keypair,pcMint:Keypair,program:Program<SimpleSerum>) => {
-  return anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      Buffer.from("market", "utf-8"),
-      coinMint.publicKey.toBuffer(),
-      pcMint.publicKey.toBuffer(),
-    ],
-    program.programId
-  )[0];
-};
-
-export const getBidsPda = (marketPda:PublicKey,program:Program<SimpleSerum>) => {
-  return anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from('bids', 'utf-8'), marketPda.toBuffer()],
-    program.programId,
-  )[0];
-}
-
-export const getAsksPda = (marketPda:PublicKey,program:Program<SimpleSerum>) => {
-  return anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from('asks', 'utf-8'), marketPda.toBuffer()],
-    program.programId,
-  )[0];
-}
-
-export const getReqQPda = (marketPda:PublicKey,program:Program<SimpleSerum>) => {
-  return anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from('req-q', 'utf-8'), marketPda.toBuffer()],
-    program.programId,
-  )[0];
-}
-
-export const getEventQPda = (marketPda:PublicKey,program:Program<SimpleSerum>) => {
-  return anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from('event-q', 'utf-8'), marketPda.toBuffer()],
-    program.programId,
-  )[0];
-}
-
-export const getOpenOrdersPda = (marketPda:PublicKey,authority:AnchorWallet,program:Program<SimpleSerum>) => {
-  return anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      Buffer.from('open-orders', 'utf-8'),
-      marketPda.toBuffer(),
-      authority.publicKey.toBuffer(),
-    ],
-    program.programId,
-  )[0];
 };
