@@ -33,12 +33,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             {mounted && (
-              // <GlobalStateProvider>
+              <GlobalStateProvider>
                 <AppContainer>
                   <Toaster position="bottom-left" />
                   <Component {...pageProps} />
                 </AppContainer>
-              // </GlobalStateProvider>
+              </GlobalStateProvider>
             )}
           </WalletModalProvider>
         </WalletProvider>

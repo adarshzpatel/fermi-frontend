@@ -10,9 +10,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 
 
 const Trade = (props: Props) => {
-  const [pair, setPair] = useState<string>("SOL/USDT");
-  const {connection} = useConnection()
-  
+  const [pair, setPair] = useState<string>("SOL/USDT");  
   
   return (
     <div>

@@ -21,75 +21,11 @@ const BuySell = (props: Props) => {
   const [price, setPrice] = useState(0);
   const [size, setSize] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const wallet = useWallet();
-  const { connection } = useConnection();
-  const {
-    program,
-    pdas: { asksPda, bidsPda, eventQPda, marketPda, openOrdersPda, reqQPda },
-    coinMint,
-    coinVault,
-    authorityCoinTokenAccount,
-    authorityPcTokenAccount,
-    pcMint,
-    pcVault,
-    isConnected,
-  } = useGlobalState();
-
-  const { publicKey } = useWallet();
 
   const createNewBidOrder = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const limitPrice = new anchor.BN(price);
-    const maxCoinQty = new anchor.BN(size);
-    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
-    console.log({limitPrice,maxCoinQty,maxNativePcQty})
-    if (  
-      !limitPrice ||
-      !maxCoinQty ||
-      !marketPda ||
-      !coinMint ||
-      !pcMint ||
-      !coinVault ||
-      !pcVault ||
-      !openOrdersPda ||
-      !wallet ||
-      !bidsPda ||
-      !asksPda ||
-      !reqQPda ||
-      !eventQPda ||
-      !publicKey
-    ){
-      alert("Insufficient data")
-      return
-    }
-
-
-    try {
-      const tx = await program?.methods
-        .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
-          limit: {},
-        })
-        .accounts({
-          openOrders: openOrdersPda,
-          market: marketPda,
-          coinVault,
-          pcVault,
-          coinMint: coinMint?.publicKey,
-          pcMint: pcMint?.publicKey,
-          payer: publicKey,
-          bids: bidsPda,
-          asks: asksPda,
-          reqQ: reqQPda,
-          eventQ: eventQPda,
-          authority: publicKey,
-        })
-        .signers([publicKey])
-        .rpc();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  }
+  
   const createNewAskOrder = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const limitPrice = new anchor.BN(price);

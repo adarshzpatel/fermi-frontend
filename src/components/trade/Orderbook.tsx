@@ -14,8 +14,8 @@ type OrderRowProps = {
 const AskRow = ({ price, qty }: OrderRowProps) => {
   return (
     <div className="flex justify-between items-center font-medium">
+      <span className="text-red-500">{qty}</span>
       <span>{price}</span>
-      <span className="text-green-500">{qty}</span>
     </div>
   );
 };
@@ -23,14 +23,16 @@ const AskRow = ({ price, qty }: OrderRowProps) => {
 const BidRow = ({ price, qty }: OrderRowProps) => {
   return (
     <div className="flex justify-between items-center font-medium">
-      <span className="text-red-500">{qty}</span>
       <span>{price}</span>
+      <span className="text-green-500">{qty}</span>
     </div>
   );
 };
 
 const SkeletonRow = () => {
-  return <div className="h-4 bg-gray-100/10 mb-1 rounded-sm animate-pulse w-full"></div>;
+  return (
+    <div className="h-4 bg-gray-100/10 mb-1 rounded-sm animate-pulse w-full"></div>
+  );
 };
 
 const Orderbook = (props: Props) => {
@@ -50,14 +52,14 @@ const Orderbook = (props: Props) => {
         <div>Quantity</div>
         <div>Price(SOL)</div>
       </div>
-      {/* Asks column */}
       <div className="grid gap-4 grid-cols-2 mt-1">
+        {/* Bids Column */}
         <div>
           <div className="bg-green-900/10">
-            {asks?.map((item, idx) => (
-              <AskRow price={item?.price} qty={item?.qty} key={`ask-${idx}`} />
+            {bids?.map((item, idx) => (
+              <BidRow price={item?.price} qty={item?.qty} key={`bid-${idx}`} />
             ))}
-            {asks.length === 0 && (
+            {bids.length === 0 && (
               <>
                 <SkeletonRow />
                 <SkeletonRow />
@@ -67,14 +69,14 @@ const Orderbook = (props: Props) => {
               </>
             )}
           </div>
+          {/* Asks column */}
         </div>
-        {/* Bids Column */}
         <div>
           <div className="bg-red-900/10">
-            {bids?.map((item, idx) => (
-              <BidRow price={item?.price} qty={item?.qty} key={`bid-${idx}`} />
+            {asks?.map((item, idx) => (
+              <AskRow price={item?.price} qty={item?.qty} key={`ask-${idx}`} />
             ))}
-            {bids.length === 0 && (
+            {asks.length === 0 && (
               <>
                 <SkeletonRow />
                 <SkeletonRow />

@@ -15,9 +15,11 @@ type ParsedOrder = {
 };
 
 const useTestMarket = () => {
+  
   const [program, setProgram] = useState<anchor.Program<SimpleSerum> | null>(
     null
   );
+
   const [asks, setAsks] = useState<ParsedOrder[]>([]);
   const [bids, setBids] = useState<ParsedOrder[]>([]);
   const { connection } = useConnection();
