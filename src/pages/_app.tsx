@@ -30,15 +30,15 @@ export default function App({ Component, pageProps }: AppProps) {
         endpoint={RPC_ENDPOINT}
         config={{ commitment: "confirmed" }}
       >
-        <WalletProvider wallets={wallets} >
+        <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
             {mounted && (
-              <GlobalStateProvider>
+              // <GlobalStateProvider>
                 <AppContainer>
                   <Toaster position="bottom-left" />
                   <Component {...pageProps} />
                 </AppContainer>
-              </GlobalStateProvider>
+              // </GlobalStateProvider>
             )}
           </WalletModalProvider>
         </WalletProvider>

@@ -63,6 +63,7 @@ const BuySell = (props: Props) => {
       return
     }
 
+
     try {
       const tx = await program?.methods
         .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {

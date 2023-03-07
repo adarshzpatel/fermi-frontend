@@ -11,8 +11,14 @@ import { AnchorWallet } from "@solana/wallet-adapter-react";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
 
+export const priceFromOrderId = (orderId:anchor.BN) => {
+  return Number((BigInt(orderId.toString()) >> BigInt(64)).toString()).toFixed(2);
+}
+
 export const PROGRAM_ADDRESS = "HTbkjiBvVXMBWRFs4L56fSWaHpX343ZQGzY4htPQ5ver"
+
 export const getProgramId = () => new PublicKey(PROGRAM_ADDRESS)
+
 export const getProvider = (connection:Connection,wallet:AnchorWallet) => {
   return new AnchorProvider(
     connection,
@@ -57,7 +63,7 @@ export const createMint = async (
   console.log("created mint for ", mint.publicKey.toString(), { res });
 };
 
-const airDropSol = async (to: PublicKey) => {
+export const airDropSol = async (to: PublicKey) => {
   try {
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     const airdropSignature = await connection.requestAirdrop(
