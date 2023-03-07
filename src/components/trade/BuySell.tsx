@@ -2,13 +2,13 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import Button from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import * as anchor from "@project-serum/anchor";
-import { useGlobalState } from "@components/hooks/useGlobalState";
+import { useGlobalState } from "src/hooks/useGlobalState";
 import {
   useAnchorWallet,
   useConnection,
   useWallet,
 } from "@solana/wallet-adapter-react";
-import useTestMarket from "@components/hooks/useTestMarket";
+import useTestMarket from "src/hooks/useTestMarket";
 type Props = {};
 
 enum Switch {

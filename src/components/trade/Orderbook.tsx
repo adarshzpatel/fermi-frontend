@@ -1,5 +1,5 @@
 import { FiTrendingUp } from "react-icons/fi";
-import useTestMarket from "@components/hooks/useTestMarket";
+import useTestMarket from "src/hooks/useTestMarket";
 
 type Props = {};
 
