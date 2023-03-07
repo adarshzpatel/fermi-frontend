@@ -2,13 +2,13 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import Button from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import * as anchor from "@project-serum/anchor";
-import { useGlobalState } from "@components/ui/hooks/useGlobalState";
+import { useGlobalState } from "@components/hooks/useGlobalState";
 import {
   useAnchorWallet,
   useConnection,
   useWallet,
 } from "@solana/wallet-adapter-react";
-import useTestMarket from "@components/ui/hooks/useTestMarket";
+import useTestMarket from "@components/hooks/useTestMarket";
 type Props = {};
 
 enum Switch {
@@ -31,7 +31,7 @@ const BuySell = (props: Props) => {
     const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
     await createNewBid(limitPrice,maxCoinQty,maxNativePcQty)
   }
-  
+
   const createNewAskOrder = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const limitPrice = new anchor.BN(price);

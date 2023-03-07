@@ -19,6 +19,7 @@ import {
 } from "@utils/constants";
 import { PublicKey } from "@solana/web3.js";
 import { useGlobalState } from "./useGlobalState";
+import { toast } from "react-hot-toast";
 
 type ParsedOrder = {
   price: string;
@@ -137,7 +138,7 @@ const useTestMarket = () => {
   ) => {
     try {
       if (!connectedPublicKey || !signTransaction || !sendTransaction) throw Error("No connected wallet found!");
-
+        // get tx instance from anchor program method
         const orderTx = await program?.methods
         .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
           limit: {},
@@ -160,15 +161,16 @@ const useTestMarket = () => {
 
       if (!orderTx)
         throw new Error("Something went wrong while building transaction");
-
+      // sign tx
       orderTx.feePayer = connectedPublicKey;
       const latestBlockhash = await connection.getLatestBlockhash();
       orderTx.feePayer = connectedPublicKey;
       orderTx.recentBlockhash = latestBlockhash.blockhash;      
       const signedTx = await signTransaction(orderTx)
-      const tx = await sendTransaction(signedTx,connection)
+      toast.success("Signed Tx")
+      const signature = await sendTransaction(signedTx,connection)
+      toast.success("Tx sent : " + signature)
 
-      console.log(tx)
     } catch (err) {
       console.log(err);
     }
