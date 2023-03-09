@@ -61,15 +61,7 @@ const Orderbook = (props: Props) => {
             {bids?.map((item, idx) => (
               <BidRow price={item?.price} qty={item?.qty} key={`bid-${idx}`} />
               ))}
-            {bids.length === 0 && (
-              <>
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-              </>
-            )}
+            
           </div>
           {/* Asks column */}
         </div>
@@ -78,15 +70,6 @@ const Orderbook = (props: Props) => {
             {asks?.map((item, idx) => (
               <AskRow price={item?.price} qty={item?.qty} key={`ask-${idx}`} />
               ))}
-            {asks.length === 0 && (
-              <>
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-              </>
-            )}
           </div>
         </div>
       </div>

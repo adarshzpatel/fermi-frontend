@@ -2,12 +2,6 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import Button from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import * as anchor from "@project-serum/anchor";
-import { useGlobalState } from "src/hooks/useGlobalState";
-import {
-  useAnchorWallet,
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
 import useTestMarket from "src/hooks/useTestMarket";
 import GradientCard from "@components/ui/GradientCard";
 type Props = {};
@@ -23,23 +17,21 @@ const BuySell = (props: Props) => {
   const [price, setPrice] = useState(0);
   const [size, setSize] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const { createNewBid } = useTestMarket();
+  const { createNewBid,createNewAsk } = useTestMarket();
 
-  const createNewBidOrder = async (e: FormEvent<HTMLFormElement>) => {
+  const createNewOrder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const limitPrice = new anchor.BN(price);
     const maxCoinQty = new anchor.BN(size);
     const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
-    await createNewBid(limitPrice, maxCoinQty, maxNativePcQty);
+    if(Switch.ASK) {
+      await createNewAsk(limitPrice,maxCoinQty,maxNativePcQty)
+    } else {
+      await createNewBid(limitPrice, maxCoinQty, maxNativePcQty);
+    }
+
   };
 
-  const createNewAskOrder = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const limitPrice = new anchor.BN(price);
-    const maxCoinQty = new anchor.BN(size);
-    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
-    console.log({ limitPrice, maxCoinQty, maxNativePcQty });
-  };
 
   return (
     <GradientCard>
@@ -64,7 +56,7 @@ const BuySell = (props: Props) => {
         </button>
       </div>
       <form
-        onSubmit={state === Switch.ASK ? createNewAskOrder : createNewBidOrder}
+        onSubmit={createNewOrder }
         className="flex flex-col gap-2 mt-2 p-4"
       >
         <Input
