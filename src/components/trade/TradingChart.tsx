@@ -1,12 +1,16 @@
+import GradientCard from '@components/ui/GradientCard'
 import React from 'react'
 
 type Props = {}
 
+
+// todo : show chart from event Q
 const TradingChart = (props: Props) => {
   return (
-    <div className="border  flex items-center justify-center p-4 col-span-2 border-gray-700 rounded-lg">
+<GradientCard cls={"col-span-2 "}>
+
       TRADING CHART
-    </div>
+</GradientCard>
   )
 }
 

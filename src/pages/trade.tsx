@@ -21,8 +21,7 @@ const Trade = (props: Props) => {
         <div className="lg:col-span-3 grid lg:grid-cols-3 gap-4">
           <BuySell />
           <TradingChart />
-          <div className="col-span-3 border p-4 border-gray-700 rounded-lg">
-            {/* ORDERS / POSITIONS */}
+           {/* <div className="col-span-3 border p-4 border-gray-700 rounded-lg">
             <Tabs defaultValue="balances">
               <TabsList className="justify-around w-full">
                 <TabsTrigger className="w-full" value="balances">
@@ -51,7 +50,7 @@ const Trade = (props: Props) => {
                 Connect Wallet to see trade history
               </TabsContent>
             </Tabs>
-          </div>
+          </div>  */}
         </div>
         <Orderbook />
       </div>

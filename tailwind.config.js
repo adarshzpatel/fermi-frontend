@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const { cyan,gray, neutral, purple } = require('tailwindcss/colors');
+const { cyan,gray, zinc, purple } = require('tailwindcss/colors');
 
 module.exports = {
   content: [
@@ -13,7 +13,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        gray:gray,
+        gray:zinc,
         primary:purple
       }
     },

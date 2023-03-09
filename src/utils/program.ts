@@ -16,6 +16,11 @@ export const priceFromOrderId = (orderId:anchor.BN) => {
   return Number((BigInt(orderId.toString()) >> BigInt(64)).toString()).toFixed(2);
 }
 
+export const timestampFromOrderId = (orderId:anchor.BN) => {
+  const timestamp = (BigInt(orderId.toString()) << BigInt(64)).toString()
+  console.log({timestamp:timestamp,date:new Date(timestamp)})
+return timestamp
+}
 
 export const getProgramId = () => new PublicKey(PROGRAM_ADDRESS)
 

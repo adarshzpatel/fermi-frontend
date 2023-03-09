@@ -7,7 +7,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 type Props = {};
 
 const styles = {
-  header:"py-3 px-4 sticky border-b border-gray-700",
+  header:"py-3 px-4 sticky  border-gray-700 bg-[#0F1014]",
   nav:"flex items-center mx-auto justify-between",
   connectWallet:"bg-primary-900/25 text-primary-200 rounded-xl"
 }
@@ -15,6 +15,8 @@ const styles = {
 const Navbar = (props: Props) => {
   return (
     <>
+  <div className="bg-gradient-to-r from-fuchsia-500 pb-[0.5px] via-cyan-400 to-emerald-400 ">
+
       <header className={styles.header}>
         <nav className={styles.nav}>
             <Logo />
@@ -28,6 +30,7 @@ const Navbar = (props: Props) => {
           </div>
         </nav>
       </header>
+  </div>
     </>
   );
 };

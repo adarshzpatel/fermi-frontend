@@ -9,6 +9,7 @@ import {
   useWallet,
 } from "@solana/wallet-adapter-react";
 import useTestMarket from "src/hooks/useTestMarket";
+import GradientCard from "@components/ui/GradientCard";
 type Props = {};
 
 enum Switch {
@@ -22,26 +23,26 @@ const BuySell = (props: Props) => {
   const [price, setPrice] = useState(0);
   const [size, setSize] = useState(0);
   const [quantity, setQuantity] = useState(0);
-  const {createNewBid} = useTestMarket()
-  
-  const createNewBidOrder = async (e:FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const limitPrice = new anchor.BN(price);
-    const maxCoinQty = new anchor.BN(size);
-    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
-    await createNewBid(limitPrice,maxCoinQty,maxNativePcQty)
-  }
+  const { createNewBid } = useTestMarket();
 
-  const createNewAskOrder = async (e:FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const createNewBidOrder = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const limitPrice = new anchor.BN(price);
     const maxCoinQty = new anchor.BN(size);
     const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
-    console.log({limitPrice,maxCoinQty,maxNativePcQty})
+    await createNewBid(limitPrice, maxCoinQty, maxNativePcQty);
+  };
+
+  const createNewAskOrder = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const limitPrice = new anchor.BN(price);
+    const maxCoinQty = new anchor.BN(size);
+    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
+    console.log({ limitPrice, maxCoinQty, maxNativePcQty });
   };
 
   return (
-    <div className="border flex flex-col border-gray-700 rounded-lg">
+    <GradientCard>
       {/* BUY / SELL */}
       <h6 className=" p-4 font-bold text-center text-xl">SOL-PERP</h6>
       <div className="bg-gray-800 font-bold text-center gap-1 p-1 grid grid-cols-2 ">
@@ -62,16 +63,37 @@ const BuySell = (props: Props) => {
           ASK
         </button>
       </div>
-      <form onSubmit={state === Switch.ASK ? createNewAskOrder : createNewBidOrder} className="flex flex-col gap-2 mt-2 p-4">
-        <Input readOnly label="Type" labelClassNames="text-sm " defaultValue={"Limit"} className="cols-span-1"/>
-        <Input label="Price" labelClassNames="text-sm" value={price} onChange={((e)=>setPrice(Number(e.target.value)))} type="number"  />
+      <form
+        onSubmit={state === Switch.ASK ? createNewAskOrder : createNewBidOrder}
+        className="flex flex-col gap-2 mt-2 p-4"
+      >
+        <Input
+          readOnly
+          label="Type"
+          labelClassNames="text-sm "
+          defaultValue={"Limit"}
+          className="cols-span-1"
+        />
+        <Input
+          label="Price"
+          labelClassNames="text-sm"
+          value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+          type="number"
+        />
         <Input
           label="Size (amount of USDC)"
           labelClassNames="text-sm"
           type="number"
-          value={size} onChange={((e)=>setSize(Number(e.target.value)))}
+          value={size}
+          onChange={(e) => setSize(Number(e.target.value))}
         />
-        <Input label="Quantity(amount of SOL)" labelClassNames="text-sm" value={quantity} onChange={((e)=>setQuantity(Number(e.target.value)))}/>
+        <Input
+          label="Quantity(amount of SOL)"
+          labelClassNames="text-sm"
+          value={quantity}
+          onChange={(e) => setQuantity(Number(e.target.value))}
+        />
         {/* <div className="col-span-2 flex mt-2 items-center justify-center gap-1.5  text-xs rounded-lg bg-gray-700">
           <button type="button" className="hover:bg-gray-800 p-2">10%</button>
           <button className="hover:bg-gray-800 p-2">25%</button>
@@ -79,11 +101,11 @@ const BuySell = (props: Props) => {
           <button className="hover:bg-gray-800 p-2">75%</button>
           <button className="hover:bg-gray-800 p-2">100%</button>
         </div> */}
-        <Button variant='primary' className="mt-4 w-full ">
-          {state === Switch.ASK ? "ASK" : "BID" }
+        <Button variant="primary" className="mt-4 w-full ">
+          {state === Switch.ASK ? "ASK" : "BID"}
         </Button>
       </form>
-    </div>
+    </GradientCard>
   );
 };
 

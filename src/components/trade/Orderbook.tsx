@@ -1,3 +1,4 @@
+import GradientCard from "@components/ui/GradientCard";
 import { FiTrendingUp } from "react-icons/fi";
 import useTestMarket from "src/hooks/useTestMarket";
 
@@ -28,15 +29,19 @@ const BidRow = ({ price, qty }: OrderRowProps) => {
 
 const SkeletonRow = () => {
   return (
-    <div className="h-4 bg-gray-100/10 mb-1 rounded-sm animate-pulse w-full"></div>
+    <div className="h-4 bg-gray-100/10 mb-1 rounded-sm animate-pulse w-full pb-1">
+      
+    </div>
   );
 };
+
 
 const Orderbook = (props: Props) => {
   const { bids, asks } = useTestMarket();
 
   return (
-    <div className="p-4 cols-span-3 border border-gray-700 rounded-lg">
+    <GradientCard>
+    <div className="p-4 bg-[#111216]  cols-span-3  border-gray-700 rounded-lg">
       <div className="pb-4 font-bold text-center text-xl flex justify-between">
         Orderbook
         <div className="text-green-500 flex items-center justify-center gap-2  ">
@@ -55,7 +60,7 @@ const Orderbook = (props: Props) => {
           <div className="bg-green-900/10">
             {bids?.map((item, idx) => (
               <BidRow price={item?.price} qty={item?.qty} key={`bid-${idx}`} />
-            ))}
+              ))}
             {bids.length === 0 && (
               <>
                 <SkeletonRow />
@@ -72,7 +77,7 @@ const Orderbook = (props: Props) => {
           <div className="bg-red-900/10">
             {asks?.map((item, idx) => (
               <AskRow price={item?.price} qty={item?.qty} key={`ask-${idx}`} />
-            ))}
+              ))}
             {asks.length === 0 && (
               <>
                 <SkeletonRow />
@@ -86,6 +91,7 @@ const Orderbook = (props: Props) => {
         </div>
       </div>
     </div>
+            </GradientCard>
   );
 };
 

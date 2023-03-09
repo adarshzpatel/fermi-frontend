@@ -11,7 +11,7 @@ const Logo = (props: Props) => {
         <div className="relative h-10 w-10 rounded-lg overflow-hidden">
         <Image src='/logo.jpeg' fill alt='fermi-protocol-logo'/>
         </div>
-        <h1 className="text-3xl font-bold text-gray-50">Fermi</h1>
+        <h1 className="text-3xl font-bold italic text-gray-50">Fermi</h1>
       </Link>
   );
 };

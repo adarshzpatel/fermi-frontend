@@ -10,7 +10,7 @@ type Props = {
 
 const AppContainer = ({ showNav=true, children }: Props) => {
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-50">
+    <div className="min-h-screen backdrop-blur-xl bg-[#0F1014] backdrop-brightness-50 text-gray-50">
       {showNav && <Navbar />}
       <div
         
