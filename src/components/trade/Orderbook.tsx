@@ -38,7 +38,6 @@ const SkeletonRow = () => {
 
 const Orderbook = (props: Props) => {
   const { bids, asks } = useTestMarket();
-
   return (
     <GradientCard>
     <div className="p-4 bg-[#111216]  cols-span-3  border-gray-700 rounded-lg">
@@ -60,7 +59,7 @@ const Orderbook = (props: Props) => {
           <div className="bg-green-900/10">
             {bids?.map((item, idx) => (
               <BidRow price={item?.price} qty={item?.qty} key={`bid-${idx}`} />
-              ))}
+            ))}
             
           </div>
           {/* Asks column */}
@@ -69,7 +68,7 @@ const Orderbook = (props: Props) => {
           <div className="bg-red-900/10">
             {asks?.map((item, idx) => (
               <AskRow price={item?.price} qty={item?.qty} key={`ask-${idx}`} />
-              ))}
+            ))}
           </div>
         </div>
       </div>
