@@ -13,9 +13,7 @@ type Props = {
   onChange:Dispatch<SetStateAction<string>>
 }
 const itemList = [
-  "SOL/USDT",
   "SOL/USDC",
-  "ETH/USDT"
 ]
 const PairSelector = ({value,onChange}: Props) => {
  

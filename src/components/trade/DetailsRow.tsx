@@ -16,7 +16,7 @@ const StatItem = ({title,value}:StatItemProps) => {
 }
 
 const DetailsRow = (props: Props) => {
-  const [current,setCurrent] = useState<string>("")
+  const [current,setCurrent] = useState<string>("SOL/USDC")
   return (
     <div className='flex gap-2 items-center  '>
         <PairSelector value={current} onChange={setCurrent}/>
