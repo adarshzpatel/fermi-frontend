@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as anchor from "@project-serum/anchor";
+import * as spl from '@solana/spl-token';
 import {
   useConnection,
   useWallet,
@@ -12,7 +13,7 @@ import {
   coinVault,
   eventQPda,
   marketPda,
-  openOrdersPda,
+  createAssociatedTokenAccount,
   pcMint,
   pcVault,
   reqQPda,
@@ -131,39 +132,63 @@ const useTestMarket = () => {
     }
   };
 
+  
+
   const createNewBid = async (
     limitPrice: anchor.BN,
     maxCoinQty: anchor.BN,
     maxNativePcQty: anchor.BN
   ) => {
     try {
+      const authorityPCTokenAccount = await spl.getAssociatedTokenAddress(  
+      new anchor.web3.PublicKey(pcMint),
+        connectedPublicKey,
+        false,
+      );
+      
+      console.log(authorityPCTokenAccount.toString());
+      let openOrdersPda;
+      let openOrdersPdaBump;
+      [openOrdersPda, openOrdersPdaBump] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from('open-orders', 'utf-8'),
+          new anchor.web3.PublicKey(marketPda).toBuffer(),
+          connectedPublicKey.toBuffer(),
+        ],
+        program.programId,
+      );
       if (!connectedPublicKey || !signTransaction || !sendTransaction) throw Error("No connected wallet found!");
         // get tx instance from anchor program method
-        const orderTx = await program?.methods
+        const orderTx = await program.methods
         .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
           limit: {},
         })
         .accounts({
           openOrders: openOrdersPda,
-          market: marketPda,
-          coinVault: coinVault,
-          pcVault: pcVault,
-          coinMint: coinMint,
-          pcMint: pcMint,
-          payer: connectedPublicKey?.toString(),
-          bids: bidsPda,
-          asks: asksPda,
-          reqQ: reqQPda,
-          eventQ: eventQPda,
-          authority: connectedPublicKey,
+          market: new anchor.web3.PublicKey(marketPda),
+          coinVault: new anchor.web3.PublicKey(coinVault),
+          pcVault: new anchor.web3.PublicKey(pcVault),
+          coinMint: new anchor.web3.PublicKey(coinMint),
+          pcMint: new anchor.web3.PublicKey(pcMint),
+          payer: authorityPCTokenAccount,
+          bids: new anchor.web3.PublicKey(bidsPda),
+          asks: new anchor.web3.PublicKey(asksPda),
+          reqQ: new anchor.web3.PublicKey(reqQPda),
+          eventQ: new anchor.web3.PublicKey(eventQPda),
+          authority: connectedPublicKey.toString(),
         })
         .transaction();
+       // signers([connectedPublicKey])
+          //.rpc();
 
       if (!orderTx)
         throw new Error("Something went wrong while building transaction");
       // sign tx
       orderTx.feePayer = connectedPublicKey;
       const latestBlockhash = await connection.getLatestBlockhash();
+      console.log(latestBlockhash);
+      //toast.success(latestBlockhash);
       orderTx.feePayer = connectedPublicKey;
       orderTx.recentBlockhash = latestBlockhash.blockhash;      
       const signedTx = await signTransaction(orderTx)
