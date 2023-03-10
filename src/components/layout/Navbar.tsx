@@ -2,7 +2,7 @@ import React from "react";
 import { FiPlus } from "react-icons/fi";
 import NextLink from 'next/link'
 import Logo from "./Logo";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { WalletMultiButton, } from "@solana/wallet-adapter-react-ui";
 
 type Props = {};
 

@@ -20,10 +20,10 @@ import { toast } from "react-hot-toast";
 
 type ParsedOrder = {
   price: string;
-  qty: string;
+  qty?: string;
   orderId: anchor.BN;
-  owner: PublicKey;
-  ownerSlot: number;
+  owner?: PublicKey;
+  ownerSlot?: number;
 };
 
 type EventQueueItem = {
@@ -33,10 +33,15 @@ type EventQueueItem = {
   orderId: anchor.BN;
 };
 
+type OpenOrderItem = {
+  price: string ,
+  orderId: anchor.BN
+}
+
 const useTestMarket = () => {
   const [asks, setAsks] = useState<ParsedOrder[]>([]);
   const [bids, setBids] = useState<ParsedOrder[]>([]);
-  const [openOrders, setOpenOrders] = useState<ParsedOrder[]>([]);
+  const [openOrders, setOpenOrders] = useState<OpenOrderItem[]>([]);
   const [eventQ, setEventQ] = useState<EventQueueItem[]>([]);
   const {
     publicKey: connectedPublicKey,
@@ -91,7 +96,15 @@ const useTestMarket = () => {
         const openOrdersResponse = await program.account.openOrders.fetch(
           openOrdersPda,
         );
-        console.log({openOrdersResponse});
+        console.log(openOrdersResponse)
+        setOpenOrders(openOrdersResponse?.orders.map((item)=>{
+          const price = priceFromOrderId(item)
+          return {
+            orderId:item,
+            price
+
+          }
+        }))
     } catch (err) {
       console.log(err);
     }
@@ -107,9 +120,10 @@ const useTestMarket = () => {
 
       setEventQ(
         (eventQResponse?.buf as any[])?.map((item) => {
+          const price = priceFromOrderId(item?.orderId)
           return {
             ...item,
-            price: priceFromOrderId(item?.orderId),
+            price
           } as const;
         })
       );
@@ -146,7 +160,6 @@ const useTestMarket = () => {
       const asksResponse = await program.account.orders.fetch(
         new anchor.web3.PublicKey(asksPda)
       );
-      console.log({ asksResponse });
       setAsks(
         asksResponse?.sorted?.map((item) => {
           return {
@@ -295,7 +308,7 @@ const useTestMarket = () => {
       console.log(err);
     }
   };
-  return { bids, asks, createNewBid, createNewAsk, eventQ };
+  return {openOrders, bids, asks, createNewBid, createNewAsk, eventQ };
 };
 
 export default useTestMarket;

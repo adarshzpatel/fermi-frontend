@@ -14,8 +14,8 @@ enum Switch {
 const BuySell = (props: Props) => {
   const [state, setState] = useState<Switch>(Switch.BID);
   const [type, setType] = useState("Limit");
-  const [price, setPrice] = useState(0);
-  const [size, setSize] = useState(0);
+  const [price, setPrice] = useState<number>(0);
+  const [size, setSize] = useState<number>(0);
   const [quantity, setQuantity] = useState(0);
   const { createNewBid,createNewAsk } = useTestMarket();
 
@@ -36,7 +36,7 @@ const BuySell = (props: Props) => {
   return (
     <GradientCard>
       {/* BUY / SELL */}
-      <h6 className=" p-4 font-bold text-center text-xl">SOL-PERP</h6>
+      <h6 className=" p-4 font-bold text-center text-xl">SOL-USDC</h6>
       <div className="bg-gray-800 font-bold text-center gap-1 p-1 grid grid-cols-2 ">
         <button
           onClick={() => setState(Switch.BID)}
@@ -71,12 +71,11 @@ const BuySell = (props: Props) => {
           labelClassNames="text-sm"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
-          type="number"
+
         />
         <Input
           label="Size (amount of USDC)"
           labelClassNames="text-sm"
-          type="number"
           value={size}
           onChange={(e) => setSize(Number(e.target.value))}
         />
