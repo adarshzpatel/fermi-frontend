@@ -1,3 +1,4 @@
+import Hero from "@components/homepage/Hero";
 import { useEffect } from "react";
 import { useGlobalState } from "src/hooks/useGlobalState";
 
@@ -6,9 +7,8 @@ export default function Home() {
   useEffect(()=>{
   },[state])
 
-  return (
-    <div>
-      
-    </div>
+  return (<>
+        <Hero/>
+  </>
   );
 }
