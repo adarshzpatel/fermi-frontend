@@ -21,9 +21,10 @@ const BuySell = (props: Props) => {
 
   const createNewOrder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const limitPrice = new anchor.BN(price);
-    const maxCoinQty = new anchor.BN(size);
-    const maxNativePcQty = new anchor.BN(quantity).mul(new anchor.BN(1000000));
+    const limitPrice = new anchor.BN(Number(price));
+    const maxCoinQty = new anchor.BN(Number(size));
+    const maxNativePcQty = new anchor.BN(Number(quantity)).mul(new anchor.BN(1000000));
+    
     if(Switch.ASK) {
       await createNewAsk(limitPrice,maxCoinQty,maxNativePcQty)
     } else {
