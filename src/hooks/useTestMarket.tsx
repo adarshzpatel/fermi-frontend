@@ -18,24 +18,33 @@ import { PublicKey } from "@solana/web3.js";
 import { useGlobalState } from "./useGlobalState";
 import { toast } from "react-hot-toast";
 
-type ParsedOrder = {
+export type ParsedOrder = {
   price: string;
-  qty?: string;
-  orderId: anchor.BN;
+  qty: string;
+  orderId: string;
   owner?: PublicKey;
   ownerSlot?: number;
 };
 
-type EventQueueItem = {
-  nativeQtyReleased: anchor.BN;
+export type EventQueueItem = {
+  nativeQtyReleased: string;
   price: number;
-  nativQtyPaid: anchor.BN;
-  orderId: anchor.BN;
+  nativQtyPaid: string;
+  orderId: string;
 };
 
-type OpenOrderItem = {
+export type OpenOrderItem = {
   price: string ,
   orderId: anchor.BN
+  type:'ask' | 'bid'
+  qty:string 
+}
+
+export type Balances = {
+  nativeCoinFree:string 
+  nativeCoinTotal:string 
+  nativePcFree:string 
+  nativePcTotal:string
 }
 
 const useTestMarket = () => {
@@ -43,6 +52,7 @@ const useTestMarket = () => {
   const [bids, setBids] = useState<ParsedOrder[]>([]);
   const [openOrders, setOpenOrders] = useState<OpenOrderItem[]>([]);
   const [eventQ, setEventQ] = useState<EventQueueItem[]>([]);
+  const [balances,setBalances] = useState<Balances>({} as Balances)
   const {
     publicKey: connectedPublicKey,
     signTransaction,
@@ -67,8 +77,8 @@ const useTestMarket = () => {
   }, [program]);
 
   useEffect(()=>{
-    if(connectedPublicKey) getOpenOrders()
-  },[connectedPublicKey])
+    if(bids && asks) getOpenOrders()
+  },[bids,asks])
 
   const getOpenOrders = async () => {
     try {
@@ -79,9 +89,6 @@ const useTestMarket = () => {
         connectedPublicKey,
         false
       );
-
-      console.log(authorityPCTokenAccount.toString());
-
       let openOrdersPda;
       let openOrdersPdaBump;
       [openOrdersPda, openOrdersPdaBump] =
@@ -96,18 +103,42 @@ const useTestMarket = () => {
         const openOrdersResponse = await program.account.openOrders.fetch(
           openOrdersPda,
         );
-        console.log(openOrdersResponse)
-        setOpenOrders(openOrdersResponse?.orders.map((item)=>{
-          const price = priceFromOrderId(item)
-          return {
-            orderId:item,
-            price
+        setBalances({
+          nativeCoinFree:openOrdersResponse.nativeCoinFree.toString(),
+          nativeCoinTotal:openOrdersResponse.nativeCoinTotal.toString(),
+          nativePcFree:openOrdersResponse.nativePcFree.toString(),
+          nativePcTotal:openOrdersResponse.nativePcTotal.toString(),
+        })
+        console.log(openOrdersResponse);
+        let ids = openOrdersResponse?.orders.map((item)=> {
 
+          return item.toString()
+        })
+        // remove zero value orders
+        ids = ids.filter((item)=> item !== '0')
+        // check
+        console.log("open orders after removeing zero value orders",ids)
+        const _orders = ids.map((orderId) => {
+          try{
+            let match = eventQ.find(item=>item.orderId === orderId)
+
+            if(!match){
+              // match = asks.find(item=>item.orderId === orderId)  
+            }
+            if(match) return match
+          } catch(err){
+            console.log(err)
           }
-        }))
-    } catch (err) {
-      console.log(err);
-    }
+        })
+        console.log(_orders)
+
+        // console.log("order ids ",_orders)
+
+
+      } catch (err) {
+        console.log(err);
+      }
+
   };
 
   const getEventQ = async () => {
@@ -123,10 +154,18 @@ const useTestMarket = () => {
           const price = priceFromOrderId(item?.orderId)
           return {
             ...item,
-            price
+            price,
+            nativeQtyPaid:item?.nativeQtyPaid.toString(),
+            nativeQtyReleased:item?.nativeQtyReleased.toString(),
+            orderId:item?.orderId.toString(),
+            owner:item?.owner.toString()
           } as const;
         })
       );
+
+      console.log({eventQ})
+
+
     } catch (err) {
       console.log(err);
     }
@@ -143,6 +182,7 @@ const useTestMarket = () => {
         bidsResponse?.sorted?.map((item) => {
           return {
             ...item,
+            orderId:item.orderId.toString(),
             price: priceFromOrderId(item?.orderId),
             qty: Number(item?.qty.toString()).toFixed(2),
           } as const;
@@ -164,6 +204,7 @@ const useTestMarket = () => {
         asksResponse?.sorted?.map((item) => {
           return {
             ...item,
+            orderId:item.orderId.toString(),
             price: priceFromOrderId(item?.orderId),
             qty: Number(item?.qty.toString()).toFixed(2),
           } as const;
@@ -308,7 +349,7 @@ const useTestMarket = () => {
       console.log(err);
     }
   };
-  return {openOrders, bids, asks, createNewBid, createNewAsk, eventQ };
+  return {openOrders, bids, asks, createNewBid, createNewAsk, eventQ,balances };
 };
 
 export default useTestMarket;

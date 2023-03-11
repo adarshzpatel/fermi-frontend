@@ -1,6 +1,7 @@
 import { Select } from '@components/ui/Select'
 import React, { useState } from 'react'
 import PairSelector from './PairSelector'
+import useTestMarket from 'src/hooks/useTestMarket'
 
 type Props = {}
 
@@ -16,14 +17,16 @@ const StatItem = ({title,value}:StatItemProps) => {
 }
 
 const DetailsRow = (props: Props) => {
-  const [current,setCurrent] = useState<string>("SOL/USDC")
+  const [current,setCurrent] = useState<string>("SOL/USDC") 
+  const {balances} = useTestMarket()
+
   return (
-    <div className='flex gap-2 items-center  '>
+    <div className='flex  gap-2 items-center  '>
+        <div className='flex-1'>
         <PairSelector value={current} onChange={setCurrent}/>
-        <StatItem title="Oracle Price" value={10.00}/>
-        <StatItem title="24hr Change" value={"2.00 %"}/>
-        <StatItem title="24hr Volume" value={"$ 0.00"}/>
-        <StatItem title="Daily Change" value={"1.00%"}/>
+        </div>
+        <StatItem title="USDC Balance" value={balances?.nativePcFree}/>
+        <StatItem title="SOL Balance" value={balances?.nativeCoinTotal}/>
     </div>
   )
 }

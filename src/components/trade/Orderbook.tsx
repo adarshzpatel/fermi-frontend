@@ -41,7 +41,7 @@ const Orderbook = (props: Props) => {
 
   return (
     <GradientCard>
-    <div className="p-4 bg-[#111216]  cols-span-3  border-gray-700 rounded-lg">
+    <div className="p-4 bg-[#111216]    border-gray-700 rounded-lg">
       <div className="pb-4 font-bold text-center text-xl flex justify-between">
         Orderbook
         <div className="text-green-500 flex items-center justify-center gap-2  ">

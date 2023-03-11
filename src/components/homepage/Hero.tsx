@@ -16,8 +16,8 @@ const Hero = (props: Props) => {
     "https://image.lexica.art/full_jpg/d9e87504-b235-4981-a49a-05344e719140"
   ]
   return (
-    <section className="relative h-[calc(100vh-8rem)] flex items-center justify-center overflow-hidden">
-      <div className="relative items-center w-full px-5 py-24 mx-auto overflow-hidden md:px-12 lg:px-16 max-w-7xl">
+    <section className="relative min-h-[calc(100vh-8rem)] flex items-center justify-center ">
+      <div className="relative items-center w-full px-5 py-40 overflow-hidden   mx-auto  md:px-12 lg:px-16 max-w-7xl">
         <div className="grid items-start grid-cols-1 gap-12 md:grid-cols-2">
           <div>
             <div className="max-w-xl lg:p-10">
@@ -50,7 +50,7 @@ const Hero = (props: Props) => {
             </div>
 
           </div>
-          <div className="lg:mt-0 lg:ml-auto">
+          <div className="lg:mt-0 lg:ml-auto z-[-1]">
             <div className="absolute transform lg:-translate-y-1/2 lg:left-1/2 lg:top-1/2 lg:translate-x-8 sm:left-1/2 sm:top-0 sm:translate-x-8">
               <div className="flex items-center space-x-6 lg:space-x-8">
                 <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
@@ -77,11 +77,11 @@ const Hero = (props: Props) => {
                     />
                   </div>
                 </div>
-                <div className="grid flex-shrink-0 grid-cols-1 relative gap-y-6 lg:gap-y-8">
+                <div className="grid flex-shrink-0   grid-cols-1 relative gap-y-6 lg:gap-y-8">
                   
                   <div className="bg-cyan-600/25 absolute blur-3xl top-40 left-0 z-[-1] h-56 w-56"/>
                   <div className="bg-fuchsia-600/25 absolute blur-3xl bottom-40 left-0 z-[-1] h-56 w-56"/>
-                  <div className="h-full overflow-hidden w-44">
+                  <div className="h-full  overflow-hidden w-44">
                     <img
                       alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"

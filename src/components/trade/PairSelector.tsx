@@ -18,7 +18,7 @@ const itemList = [
 const PairSelector = ({value,onChange}: Props) => {
  
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange} >
         <SelectTrigger className="max-w-[180px] text-xl h-14 pl-4 font-medium">
           <SelectValue placeholder="Trading Pair" />
         </SelectTrigger>

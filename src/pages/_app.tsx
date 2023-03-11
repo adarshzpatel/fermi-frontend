@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
     setMounted(true);
   }, []);
 
-  return (
+return (
     <>
       <ConnectionProvider
         endpoint={RPC_ENDPOINT}
