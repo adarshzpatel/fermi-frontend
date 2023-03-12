@@ -41,7 +41,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
                     'sm:px-12 px-6 py-2 sm:py-3 sm:text-lg':size === 'lg',
                     '': size === 'none'
                 },
-                'rounded-lg font-semibold whitespace-nowrap cursor-pointer disabled:cursor-default font-display duration-200 ease-out hover:scale-[1.02] disabled:shadow-none  disabled:bg-gray-300 disabled:text-gray-900 active:scale-95  outline-none',
+                'rounded-lg font-semibold whitespace-nowrap cursor-pointer disabled:cursor-default font-display duration-200 ease-out hover:scale-[1.02] disabled:shadow-none  disabled:opacity-50  active:scale-95  outline-none',
                 className
             )}
             disabled={loading}
