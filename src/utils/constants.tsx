@@ -2,16 +2,16 @@
 // OLD
 export const PROGRAM_ADDRESS = "B1mcdHiKiDTy8TqV5Dpoo6SLUnpA6J7HXAbGLzjz6t1W"
 export const openOrdersPda = "3iGW62zKfjsdwB3wgCidDWXgqK57Kz6xT2UABJTaL88p";
-export const marketPda = "65Ma2nLzTFTAUMndBzCh77PoAmRt78WFnR15MpG4jYjD";
-export const coinVault = "sF4mMUuhezsYAnGPdFmmASUCv5TkBLwBEE5XS718g7Q";
-export const pcVault = "7c4RbBWvED4MadrzM6y8VGwLFt5Qiar9GM4r3k3HY6KT";
-export const coinMint = "4wFr9vRJdkBmpaEdAV8bPpxYGPTDeNQQWiCswATfxFKS";
-export const pcMint = "7s65Ue9fJQV3hnk9mXRjFXkXKqyw7JLiniVJwhc3tMkJ";
-export const payer = "Aj6pvkBHaif3GM7mv8AUvtDNttt1ufqSgAEuC7dn1EvN";
-export const bidsPda = "4v1DMCyho3kBqcmVCtPBmw4XeZ2L8zoDaX1bjCkPwZPP";
-export const asksPda = "GXFCg2tcd8LFCJWnPtDYuzut5P4HD25aqS8Ap4kUDHEa";
-export const reqQPda = "dqmLLWBD2N82eweZ15uURgkN2kqazcq1zqE78UXLWcK";
-export const eventQPda = "6b1EPuRn7FPQa3e5rW4BgBnnmVGGpz95LKCY8sBKDssA";
+export const marketPda = "82mmyM6XgJkjqMy95KV5uDZrPPJewXbRmkndAUkoESLc";
+export const coinVault = "44zgVZgJDjvVBgRh6mjKxB56PSjdBRZ4Aq3AdxKXQkFH";
+export const pcVault = "2YZAn29749zjh25kENUK9uyQNHCREQhubWqi1EaDaueA";
+export const coinMint = "ELHErV6Z8wNv5cyL9sbDTdsCx66ioBdm8Wi5HGMKQoZV";
+export const pcMint = "9qrt5uDfmBGgsSiY88aopW4Y1oJM13fMymjKKPfwmwmh";
+export const payer = "BMiBrKfbuXNhKWBftZXhhR59kG3Pte2byond5xor1u2t";
+export const bidsPda = "4wbSaa5y7RXp9b9MJLb1W4owVsUyHmGjxHyXCxhZBxQY";
+export const asksPda = "8GBCwbzu2Ru59KHcgQZ1WyL3RBk3D6zxtXXjB4ncPBwV";
+export const reqQPda = "GD4Ymr1aHCTeyiRtyyRvibibivBGvUAvfJCvGQqK5c72";
+export const eventQPda = "33weFW1KM2m9356K8CfUUVVwXoK3WDQ3H45Ujkb4HVvR";
 
 // NEW
 //export const PROGRAM_ADDRESS = "MQhVTudr2JBV75jt8vcnKrLZRedpb9EpFUhePvAoVus"

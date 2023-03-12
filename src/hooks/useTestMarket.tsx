@@ -37,13 +37,13 @@ export type OpenOrderItem = {
   price: string ,
   orderId: anchor.BN
   type:'ask' | 'bid'
-  qty:string 
+  qty:string
 }
 
 export type Balances = {
-  nativeCoinFree:string 
-  nativeCoinTotal:string 
-  nativePcFree:string 
+  nativeCoinFree:string
+  nativeCoinTotal:string
+  nativePcFree:string
   nativePcTotal:string
 }
 
@@ -123,7 +123,7 @@ const useTestMarket = () => {
             let match = eventQ.find(item=>item.orderId === orderId)
 
             if(!match){
-              // match = asks.find(item=>item.orderId === orderId)  
+              // match = asks.find(item=>item.orderId === orderId)
             }
             if(match) return match
           } catch(err){
@@ -229,6 +229,15 @@ const useTestMarket = () => {
         connectedPublicKey,
         false
       );
+      console.log(openOrders);
+        const bids = await program.account.orders.fetch(bidsPda);
+        console.log(bids);
+        const asks = await program.account.orders.fetch(asksPda);
+        console.log(asks);
+        const eventQ = await program.account.eventQueue.fetch(eventQPda);
+        console.log(eventQ);
+        const reqQ = await program.account.requestQueue.fetch(reqQPda);
+        console.log(reqQ);
 
       console.log(authorityPCTokenAccount.toString());
       let openOrdersPda;
