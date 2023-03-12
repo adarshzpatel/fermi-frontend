@@ -21,6 +21,7 @@ const initialData = [
 // todo : show chart from event Q
 const TradingChart = (props: Props) => {
   const {eventQ} = useTestMarket()
+	console.log({eventQ})
   return (
   <GradientCard cls={"col-span-2 items-center justify-center "}>
       <ChartComponent data={eventQ.map((item,id)=>({time:`2023-03-${id < 10 ? "0":""}${id+1}`,value:Number(item?.price)}))}/>

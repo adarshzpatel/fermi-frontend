@@ -287,6 +287,7 @@ const useTestMarket = () => {
       toast.success("Signed Tx");
       const signature = await sendTransaction(signedTx, connection);
       toast.success("Tx sent : " + signature);
+      await getOpenOrders()
     } catch (err) {
       console.log(err);
     }
@@ -354,6 +355,7 @@ const useTestMarket = () => {
       toast.success("Signed Tx");
       const signature = await sendTransaction(signedTx, connection);
       toast.success("Tx sent : " + signature);
+      await getOpenOrders()
     } catch (err) {
       console.log(err);
     }
