@@ -16,22 +16,22 @@ const BuySell = (props: Props) => {
   const [type, setType] = useState("Limit");
   const [price, setPrice] = useState<number>(0);
   const [size, setSize] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(0);
-  const { createNewBid,createNewAsk } = useGlobalState();
+  const { createNewBid, createNewAsk } = useGlobalState();
 
   const createNewOrder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const limitPrice = new anchor.BN(Number(price));
     const maxCoinQty = new anchor.BN(Number(size));
-    const maxNativePcQty = new anchor.BN(Number(quantity)).mul(new anchor.BN(1000000));
-    
-    if(state === Switch.ASK) {
-      await createNewAsk(limitPrice,maxCoinQty,maxNativePcQty)
+    const maxNativePcQty = new anchor.BN(Number(size)).mul(
+      new anchor.BN(1000000)
+    );
+
+    if (state === Switch.ASK) {
+      await createNewAsk(limitPrice, maxCoinQty, maxNativePcQty);
     } else {
       await createNewBid(limitPrice, maxCoinQty, maxNativePcQty);
     }
   };
-
 
   return (
     <GradientCard>
@@ -47,7 +47,6 @@ const BuySell = (props: Props) => {
           BID
         </button>
         <button
-          
           onClick={() => setState(Switch.ASK)}
           className={`${
             state === Switch.ASK ? "bg-red-600" : "hover:bg-gray-700"
@@ -56,10 +55,7 @@ const BuySell = (props: Props) => {
           ASK
         </button>
       </div>
-      <form
-        onSubmit={createNewOrder}
-        className="flex flex-col gap-2 mt-2 p-4"
-      >
+      <form onSubmit={createNewOrder} className="flex flex-col gap-2 mt-2 p-4">
         <Input
           readOnly
           label="Type"
@@ -73,7 +69,6 @@ const BuySell = (props: Props) => {
           value={price}
           type="number"
           onChange={(e) => setPrice(Number(e.target.value))}
-
         />
         <Input
           label="Size (amount of USDC)"
@@ -83,11 +78,12 @@ const BuySell = (props: Props) => {
           onChange={(e) => setSize(Number(e.target.value))}
         />
         <Input
+          readOnly
           label="Quantity(amount of SOL)"
           labelClassNames="text-sm"
-          value={quantity}
+          value={size}
           type="number"
-          onChange={(e) => setQuantity(Number(e.target.value))}
+          className="opacity-50"
         />
         {/* <div className="col-span-2 flex mt-2 items-center justify-center gap-1.5  text-xs rounded-lg bg-gray-700">
           <button type="button" className="hover:bg-gray-800 p-2">10%</button>
@@ -96,7 +92,11 @@ const BuySell = (props: Props) => {
           <button className="hover:bg-gray-800 p-2">75%</button>
           <button className="hover:bg-gray-800 p-2">100%</button>
         </div> */}
-        <Button disabled={price === 0 || quantity === 0 || size === 0} variant="primary" className="mt-4 w-full ">
+        <Button
+          disabled={price === 0 || size === 0}
+          variant="primary"
+          className="mt-4 w-full "
+        >
           {state === Switch.ASK ? "ASK" : "BID"}
         </Button>
       </form>

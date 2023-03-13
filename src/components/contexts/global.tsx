@@ -106,7 +106,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
 
       setEventQ(
         (eventQResponse?.buf as any[])?.map((item) => {
-          const price = priceFromOrderId(item?.orderId);
+          const price = Number((BigInt(item?.orderId.toString()) >> BigInt(64)).toString()).toFixed(2);
           return {
             ...item,
             price,
@@ -117,7 +117,6 @@ export const GlobalStateProvider = ({ children }: Props) => {
           } as const;
         })
       );
-      console.log({ eventQResponse});
     } catch (err) {
       console.log(err);
     }
@@ -210,6 +209,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
           ],
           program.programId
         );
+
       const openOrdersResponse = await program.account.openOrders.fetch(
         openOrdersPda
       );
@@ -232,7 +232,8 @@ export const GlobalStateProvider = ({ children }: Props) => {
       // remove zero value orders
       ids = ids.filter((item) => item !== "0");
       // check
-
+      console.log({bids})
+      console.log({ids})
 
       // setOpenOrders(_orders.map((item)=>({orderId:item?.orderId.toString(),owner:item?.owner.toString(),ownerSlot:item?.ownerSlot.toString(),price:item?.ownerSlot.toString(),qty:item?.nativeQtyReleased.toString(),type:"ask"})));
     } catch (err) {
