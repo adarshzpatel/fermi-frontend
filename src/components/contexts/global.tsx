@@ -117,7 +117,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
           } as const;
         })
       );
-      console.log({ eventQ });
+      console.log({ eventQResponse});
     } catch (err) {
       console.log(err);
     }
@@ -221,7 +221,9 @@ export const GlobalStateProvider = ({ children }: Props) => {
         nativePcTotal: openOrdersResponse.nativePcTotal.toString(),
       });
 
-      console.log(openOrdersResponse);
+      const eventQResponse = await program.account.eventQueue.fetch(
+        new anchor.web3.PublicKey(eventQPda)
+      );
 
       let ids = openOrdersResponse?.orders.map((item) => {
         return item.toString();
@@ -230,18 +232,9 @@ export const GlobalStateProvider = ({ children }: Props) => {
       // remove zero value orders
       ids = ids.filter((item) => item !== "0");
       // check
-      console.log("openorders ids",ids)
 
-      const _orders = ids.map((orderId) => {
-        try {
-          let match = eventQ?.find((item) => item.orderId === orderId);
-          if (match) return match;
-        } catch (err) {
-          console.log(err);
-        }
-      });
-      console.log(_orders);
-      setOpenOrders(_orders.map((item)=>({orderId:item?.orderId.toString(),owner:item?.owner.toString(),ownerSlot:item?.ownerSlot.toString(),price:item?.ownerSlot.toString(),qty:item?.nativeQtyReleased.toString(),type:"ask"})));
+
+      // setOpenOrders(_orders.map((item)=>({orderId:item?.orderId.toString(),owner:item?.owner.toString(),ownerSlot:item?.ownerSlot.toString(),price:item?.ownerSlot.toString(),qty:item?.nativeQtyReleased.toString(),type:"ask"})));
     } catch (err) {
       console.log(err);
     }
