@@ -1,9 +1,9 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import Button from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import * as anchor from "@project-serum/anchor";
-import useTestMarket from "src/hooks/useTestMarket";
 import GradientCard from "@components/ui/GradientCard";
+import { useGlobalState } from "src/hooks/useGlobalState";
 type Props = {};
 
 enum Switch {
@@ -14,10 +14,10 @@ enum Switch {
 const BuySell = (props: Props) => {
   const [state, setState] = useState<Switch>(Switch.BID);
   const [type, setType] = useState("Limit");
-  const [price, setPrice] = useState<number | undefined>();
-  const [size, setSize] = useState<number | undefined>();
-  const [quantity, setQuantity] = useState<number | undefined>();
-  const { createNewBid,createNewAsk } = useTestMarket();
+  const [price, setPrice] = useState<number>(0);
+  const [size, setSize] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(0);
+  const { createNewBid,createNewAsk } = useGlobalState();
 
   const createNewOrder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +30,6 @@ const BuySell = (props: Props) => {
     } else {
       await createNewBid(limitPrice, maxCoinQty, maxNativePcQty);
     }
-
   };
 
 

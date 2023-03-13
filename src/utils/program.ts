@@ -1,16 +1,15 @@
 import { AnchorProvider, BN, Program } from "@project-serum/anchor";
 import {
   Connection,
-  Keypair,
   LAMPORTS_PER_SOL,
   PublicKey,
   clusterApiUrl,
 } from "@solana/web3.js";
-import { IDL, SimpleSerum } from "../idl/simple_serum";
 import { AnchorWallet } from "@solana/wallet-adapter-react";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
 import { PROGRAM_ADDRESS } from "./constants";
+import {IDL,SimpleSerum} from "../idl/simple_serum"
 
 export const priceFromOrderId = (orderId:anchor.BN) => {
   return Number((BigInt(orderId.toString()) >> BigInt(64)).toString()).toFixed(2);

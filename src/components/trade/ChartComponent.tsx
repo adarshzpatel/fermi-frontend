@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 export const ChartComponent = ({
   data,
 }: {
-  data: { time: string; value: number }[];
+  data: { time: string; value: number }[] | undefined;
 }) => {
   const colors = {
     backgroundColor: "#111216",
@@ -21,7 +21,7 @@ export const ChartComponent = ({
       if (chartContainerRef?.current === null) return;
       chart.applyOptions({ width: chartContainerRef?.current.clientWidth });
     };
-
+    
     const chart = createChart(chartContainerRef.current, {
       layout: {
         background: { type: ColorType.Solid, color: colors.backgroundColor },
@@ -35,7 +35,9 @@ export const ChartComponent = ({
       height: 496,
     });
     chart.timeScale().fitContent();
-
+    
+    if(data === undefined) return
+    
     const newSeries = chart.addAreaSeries({
       lineColor: colors.lineColor,
       topColor: colors?.areaTopColor,

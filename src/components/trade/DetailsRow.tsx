@@ -1,7 +1,6 @@
-import { Select } from '@components/ui/Select'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import PairSelector from './PairSelector'
-import useTestMarket from 'src/hooks/useTestMarket'
+import { useGlobalState } from 'src/hooks/useGlobalState'
 
 type Props = {}
 
@@ -18,10 +17,10 @@ const StatItem = ({title,value}:StatItemProps) => {
 
 const DetailsRow = (props: Props) => {
   const [current,setCurrent] = useState<string>("SOL/USDC") 
-  const {balances} = useTestMarket()
+  const {balances} = useGlobalState()
 
   return (
-    <div className='flex  gap-2 items-center  '>
+    <div className='flex  gap-2 items-center '>
         <div className='flex-1'>
         <PairSelector value={current} onChange={setCurrent}/>
         </div>

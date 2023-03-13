@@ -1,7 +1,6 @@
 import GradientCard from "@components/ui/GradientCard";
 import { FiTrendingUp } from "react-icons/fi";
-import useTestMarket from "src/hooks/useTestMarket";
-
+import { useGlobalState } from "src/hooks/useGlobalState";
 type Props = {};
 
 type OrderRowProps = {
@@ -37,7 +36,7 @@ const SkeletonRow = () => {
 
 
 const Orderbook = (props: Props) => {
-  const { bids, asks } = useTestMarket();
+  const { bids, asks } = useGlobalState();
 
   return (
     <GradientCard>
