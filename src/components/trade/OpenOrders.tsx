@@ -10,7 +10,7 @@ const OpenOrders = (props: Props) => {
   const { openOrders, eventQ } = useGlobalState();
 
   return (
-    <GradientCard cls="col-span-4">
+    <GradientCard cls="col-span-3">
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-200 ">
           <thead className="text-xs text-gray-200 uppercase bg-gray-900 ">

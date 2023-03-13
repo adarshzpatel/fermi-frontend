@@ -12,7 +12,9 @@ import {
   Bids,
   EventQueue,
   GlobalContextType,
+  OpenOrderItem,
   OpenOrders,
+  OrderItem,
 } from "./types";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
@@ -191,8 +193,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
   };
   const getOpenOrders = async () => {
     try {
-      if (!program || !connectedPublicKey)
-        throw new Error("No program found!!");
+      if (!program || !connectedPublicKey || bids?.length === 0 || asks?.length === 0) return
       const authorityPCTokenAccount = await spl.getAssociatedTokenAddress(
         new anchor.web3.PublicKey(pcMint),
         connectedPublicKey,
@@ -229,13 +230,31 @@ export const GlobalStateProvider = ({ children }: Props) => {
         return item.toString();
       });
 
-      // remove zero value orders
+      // remove zero value 
       ids = ids.filter((item) => item !== "0");
       // check
-      console.log({bids})
-      console.log({ids})
 
-      // setOpenOrders(_orders.map((item)=>({orderId:item?.orderId.toString(),owner:item?.owner.toString(),ownerSlot:item?.ownerSlot.toString(),price:item?.ownerSlot.toString(),qty:item?.nativeQtyReleased.toString(),type:"ask"})));
+      let _orders:OpenOrderItem[] = ids.map((idx)=>{
+        let matched:OrderItem | undefined =  bids?.find(item=>item.orderId === idx)
+        if(matched){
+          return {
+            orderId:matched?.orderId,
+            price: matched?.price,
+            qty: matched?.qty,
+            type: "bid"
+          } as OpenOrderItem
+        }
+        // if got from ask
+        matched = asks?.find(item=>item.orderId === idx)
+        return {
+          orderId:matched?.orderId,
+          price: matched?.price,
+          qty: matched?.qty,
+          type: "ask"
+        }
+      })
+      _orders = _orders.filter(item=>item.orderId !== undefined)
+      setOpenOrders(_orders)
     } catch (err) {
       console.log(err);
     }
@@ -411,27 +430,30 @@ export const GlobalStateProvider = ({ children }: Props) => {
 
   useEffect(() => {
     if (program) {
-      getOpenOrders();
       getEventQ();
       getBids();
       getAsks();
     }
   }, [program]);
+  
+  useEffect(()=>{
+    getOpenOrders();
+  },[bids,asks])
 
   useEffect(() => {
-    console.log("open orders", openOrders);
+    // console.log("open orders", openOrders);
   }, [openOrders]);
 
   useEffect(() => {
-    console.log("eventQ", eventQ);
+    // console.log("eventQ", eventQ);
   }, [eventQ]);
 
   useEffect(() => {
-    console.log("bids", bids);
+    // console.log("bids", bids);
   }, [bids]);
 
   useEffect(() => {
-    console.log("asks", asks);
+    // console.log("asks", asks);
   }, [asks]);
 
   return (

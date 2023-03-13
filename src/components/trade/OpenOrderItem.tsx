@@ -10,6 +10,7 @@ export const OpenOrdersItem = ({ data }: { data: OpenOrderItem }) => {
 
   const canFinalize = async () => {
     try {
+      console.log(data)
       if (!eventQ) throw new Error("No event queue found");
       const order = await eventQ.find((item) => item?.orderId === data?.orderId);
 
