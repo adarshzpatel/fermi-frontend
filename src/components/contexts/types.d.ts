@@ -1,4 +1,4 @@
-import { Address } from "@project-serum/anchor";
+import { Address, BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
 type GlobalContextType = {
@@ -24,10 +24,10 @@ type GlobalContextType = {
   finalizeOrder: ( 
     owner_slot:number,
     cpty_event_slot:number,
-    orderId:string,
+    orderId:BN,
     authority_cpty:PublicKey,
     owner:PublicKey,
-    owner_side:Side
+    owner_side:"Ask" | "Bid"
   ) => Promise<void> | unknown
 };
 export enum Side {Ask="Ask" , Bid="Bid"}

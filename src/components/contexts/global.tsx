@@ -98,7 +98,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
   }, [connection, anchorWallet]);
 
 
-  const finalizeOrder = async (owner_slot:number,cpty_event_slot:number,orderId:string,authority_cpty:PublicKey,owner:PublicKey,owner_side:Side) => {
+  const finalizeOrder = async (owner_slot:number,cpty_event_slot:number,orderId:anchor.BN,authority_cpty:PublicKey,owner:PublicKey,owner_side:"Ask" | "Bid") => {
     // slot is the index number for the matached order to event queue
     if(!connectedPublicKey || !program || !signTransaction) throw new Error("No connected account found !");
 
@@ -124,9 +124,15 @@ export const GlobalStateProvider = ({ children }: Props) => {
       ],
       program?.programId
     );
+      const bidSide = {
+        bid:{}
+      }
+      const askSide ={
+        ask:{}
+      }
+    const side = owner_side === 'Ask' ? askSide : bidSide
 
-    const finalizeTx = await program?.methods.finaliseMatches(owner_slot,cpty_event_slot,new anchor.BN(Number(orderId)),authority_cpty,owner,owner_side)
-      .accounts({
+    const finalizeTx = await program?.methods.finaliseMatches(owner_slot,cpty_event_slot,orderId,owner,authority_cpty,side).accounts({
         reqQ: new anchor.web3.PublicKey(reqQPda),
         asks: new anchor.web3.PublicKey(asksPda),
         bids:new anchor.web3.PublicKey(bidsPda),

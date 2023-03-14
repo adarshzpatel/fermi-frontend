@@ -78,7 +78,7 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
       });
 
       if(!owner_slot) throw new Error("No owner_slot found!")
-      await finalizeOrder(owner_slot,cptyEvent['idx'],id,new PublicKey(cptyEvent['owner']),connectedPublicKey,data.type as ("Ask" | "Bid"))
+      await finalizeOrder(owner_slot,cptyEvent['idx'],new anchor.BN(Number(id)),new PublicKey(cptyEvent['owner']),connectedPublicKey,data.type as ("Ask" | "Bid"))
 
     } catch (err) {
       console.log(err);
