@@ -72,14 +72,14 @@ const BuySell = (props: Props) => {
           onChange={(e) => setPrice(Number(e.target.value))}
         />
         <Input
-          label="Size (amount of USDC)"
+          label="Quantity(amount of wSOL) "
           labelClassNames="text-sm"
           value={size}
           type="number"
           onChange={(e) => setSize(Number(e.target.value))}
         />
         <Input
-          label="Quantity(amount of wSOL)"
+          label="Size(amount of USDC)"
           labelClassNames="text-sm"
           value={quantity}
           onChange={(e) => setQuantity(Number(e.target.value))}
