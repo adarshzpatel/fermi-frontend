@@ -27,10 +27,10 @@ type GlobalContextType = {
     orderId:string,
     authority_cpty:PublicKey,
     owner:PublicKey,
-    owner_side:'Ask' | "Bid"
+    owner_side:Side
   ) => Promise<void> | unknown
 };
-
+export enum Side {Ask="Ask" , Bid="Bid"}
 export type OrderItem = {
   price: string;
   qty: string;

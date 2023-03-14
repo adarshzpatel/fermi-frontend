@@ -9,7 +9,7 @@ import { AnchorWallet } from "@solana/wallet-adapter-react";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
 import { PROGRAM_ADDRESS } from "./constants";
-import {IDL,SimpleSerum} from "../idl/simple_serum"
+import {IDL} from "../idl/fermi_dex"
 
 export const priceFromOrderId = (orderId:anchor.BN) => {
   return Number((BigInt(orderId ? orderId?.toString() : 0) >> BigInt(64)).toString()).toFixed(2);

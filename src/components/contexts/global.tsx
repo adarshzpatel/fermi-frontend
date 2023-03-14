@@ -11,6 +11,7 @@ import {
   Balances,
   Bids,
   GlobalContextType,
+  Side,
 } from "./types";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
@@ -97,7 +98,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
   }, [connection, anchorWallet]);
 
 
-  const finalizeOrder = async (owner_slot:number,cpty_event_slot:number,orderId:string,authority_cpty:PublicKey,owner:PublicKey,owner_side:"Ask"|"Bid") => {
+  const finalizeOrder = async (owner_slot:number,cpty_event_slot:number,orderId:string,authority_cpty:PublicKey,owner:PublicKey,owner_side:Side) => {
     // slot is the index number for the matached order to event queue
     if(!connectedPublicKey || !program || !signTransaction) throw new Error("No connected account found !");
 
@@ -124,8 +125,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
       program?.programId
     );
 
-    //@ts-ignore
-    const finalizeTx = await program?.methods.finaliseMatches(owner_slot, cpty_event_slot, orderId,authority_cpty,owner,owner_side)
+    const finalizeTx = await program?.methods.finaliseMatches(owner_slot,cpty_event_slot,new anchor.BN(Number(orderId)),authority_cpty,owner,owner_side)
       .accounts({
         reqQ: new anchor.web3.PublicKey(reqQPda),
         asks: new anchor.web3.PublicKey(asksPda),
@@ -137,7 +137,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
         pcVault: new anchor.web3.PublicKey(pcVault),
         eventQ:new anchor.web3.PublicKey(eventQPda),
         market: new anchor.web3.PublicKey(marketPda),
-        openOrdersCounterparty: openOrdersCounterpartyPda,
+        openOrdersCpty: openOrdersCounterpartyPda,
         openOrdersOwner:openOrdersPda,
       })
       .transaction();
@@ -158,6 +158,9 @@ export const GlobalStateProvider = ({ children }: Props) => {
       signature
     })
     toast.success("Order finalized !!")
+    getOpenOrders()
+    getBids()
+    getAsks()
     try {
     } catch (err) {
       console.log(err);
@@ -196,19 +199,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
 
       // remove zero value
       ids = ids.filter((item) => item !== "0");
-      // // match with eventQueue
-      // const orders = ids.map((idx) => {
-      //   let match:OrderItem | undefined;
-      //   match = bids?.find((b)=>b.orderId === idx)
-      //   if(match){
-
-      //     return {...match,type:"Bid",owner:match?.owner.toString(),orderId:match?.orderId}
-      //   }
-      //   match = asks?.find(a => a.orderId === idx)
-      //   if(!match) return
-      //   return {...match,type:"Ask",owner:match?.owner.toString(),orderId:match?.orderId}
-      // })
-      // console.log(orders);
+      
       setOpenOrders(ids)
     } catch (err:any) {
       console.log(err);
