@@ -5,15 +5,12 @@ import {
 } from "@solana/wallet-adapter-react";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { getProgram, getProvider } from "@utils/program";
-import {useCollection, useCollectionData} from "react-firebase-hooks/firestore"
+import {useCollectionData} from "react-firebase-hooks/firestore"
 import {
   Asks,
   Balances,
   Bids,
   GlobalContextType,
-  OpenOrderItem,
-  OpenOrders,
-  OrderItem,
 } from "./types";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
@@ -403,7 +400,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
   }, [program]);
   
   useEffect(()=>{
-    if(connectedPublicKey && program && eventQ) getOpenOrders();
+    if(connectedPublicKey && program ) getOpenOrders();
   },[connectedPublicKey,program,eventQ])
 
 
