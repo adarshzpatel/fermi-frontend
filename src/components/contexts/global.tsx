@@ -155,8 +155,8 @@ export const GlobalStateProvider = ({ children }: Props) => {
   };
   const getOpenOrders = async () => {
     try {
-      if (!program || !connectedPublicKey) return 
-    
+      if (!program || !connectedPublicKey) return
+
       let openOrdersPda;
       let openOrdersPdaBump;
       [openOrdersPda, openOrdersPdaBump] =
@@ -184,11 +184,11 @@ export const GlobalStateProvider = ({ children }: Props) => {
         return item.toString();
       });
 
-      // remove zero value 
+      // remove zero value
       ids = ids.filter((item) => item !== "0");
       // // match with eventQueue
       // const orders = ids.map((idx) => {
-      //   let match:OrderItem | undefined; 
+      //   let match:OrderItem | undefined;
       //   match = bids?.find((b)=>b.orderId === idx)
       //   if(match){
 
@@ -279,7 +279,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
 
 
       const orderTx = await program.methods
-        .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
+        .newOrder({ ask: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
           limit: {},
         })
         .accounts({
@@ -399,7 +399,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
       getAsks();
     }
   }, [program]);
-  
+
   useEffect(()=>{
     if(connectedPublicKey && program ) getOpenOrders();
   },[connectedPublicKey,program,eventQ])
