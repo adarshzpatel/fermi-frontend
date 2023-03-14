@@ -15,6 +15,7 @@ const TradingChart = (props: Props) => {
 	
 	
 	const data = useMemo(()=>{
+		if(!eventQ) return
 		let newData:{time:string,price:number}[] = [];
 		(eventQ as any[])?.sort((a,b)=> a.timestamp - b.timestamp)
 		eventQ.forEach((item:any)=>{
@@ -29,9 +30,13 @@ const TradingChart = (props: Props) => {
 		return newData
 	},[eventQ])
 	
-  
+  if(eventQ.length === 0){
+		return <div className="col-span-2 w-full h-full bg-[#111216] border-cyan-400/50 border-[1px] rounded-md z-50 flex items-center justify-center">	
+				No Events found to display chart!
+			</div>
+	}
 	return (
-			<div className="col-span-2 w-full h-full">
+			<div className="col-span-2 w-full h-full ">
 
       <ResponsiveContainer width="100%" height="100%" className={"flex-1 bg-[#111216] border-cyan-400/50 border-[1px] rounded-md z-50"}>
 				<AreaChart
