@@ -19,7 +19,7 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
     const askMatch = asks?.find((it:any) => it?.orderId === id);
     if(askMatch?.orderId) return {price:askMatch.price,qty:askMatch?.qty,type:"Ask"}
     return undefined
-  },[eventQ,id])
+  },[bids,asks,id])
 
   useEffect(()=>{
     // check if it is finalizable or not
@@ -32,7 +32,6 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
         console.log(event['cpty_orderid'])
         if(isFinalisable) {
           console.log("FINALISE NOW!!!")
-
           setFinalisable(true)
           setCptyEvent(event)
         }
