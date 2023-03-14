@@ -2,14 +2,20 @@ import { OpenOrderItem, OrderItem } from "@components/contexts/types";
 import { useEffect, useMemo, useState } from "react";
 import { useGlobalState } from "src/hooks/useGlobalState";
 import * as anchor from "@project-serum/anchor";
-import { eventQPda } from "@utils/constants";
+import { eventQPda, marketPda } from "@utils/constants";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { resourceUsage } from "process";
+import { PublicKey } from "@solana/web3.js";
+import { toast } from "react-hot-toast";
 
 export const OpenOrdersItem = ({ id }: { id: string }) => {
   const [finalisable, setFinalisable] = useState(false);
-  const { eventQ,bids,asks,program } = useGlobalState();
-  
+  const [cptyEvent,setCptyEvent] = useState<any>({})
+  const { eventQ,bids,asks,program,finalizeOrder } = useGlobalState();
+  const {publicKey:connectedPublicKey} = useWallet()
+
   const data = useMemo(()=>{
-    console.log(bids)
+    // match the openorder id to bids / asks
     const bidMatch = bids?.find((it:any) => it?.orderId === id);
     if(bidMatch?.orderId) return {price:bidMatch?.price,qty:bidMatch?.qty,type:"Bid"}
     const askMatch = asks?.find((it:any) => it?.orderId === id);
@@ -17,14 +23,61 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
     return undefined
   },[eventQ,id])
 
+  useEffect(()=>{
+    // check if it is finalizable or not
+    eventQ?.forEach((event:any) => {
+      const isValidMatch = event['maker'] === 'true' || event['cpty_orderid'] !== undefined
+      if(isValidMatch){
+        const isFinalisable = event['cpty_orderid'] === id
+        if(isFinalisable) {
+          setFinalisable(true)
+          setCptyEvent(event)
+        }
+      }
+    });
+  },[eventQ,id])
+
   if(!data){
     return <></>
   }
 
+
   const handleFinalize = async () => {
     try {
       if (!eventQ) throw new Error("No event queue found");
-      console.log("Let's finalize boi",id)
+      if(!connectedPublicKey ) throw new Error("No connected wallet found !")
+      // get owner_slot from the open orders index 
+      // get event_slot from eventQ
+      let owner_slot 
+      let cpty_event_slot; 
+
+      let openOrdersPda;
+      let openOrdersPdaBump;
+
+      [openOrdersPda,openOrdersPdaBump] = await anchor.web3.PublicKey.findProgramAddress(
+          [
+            Buffer.from("open-orders", "utf-8"),
+            new anchor.web3.PublicKey(marketPda).toBuffer(),
+            connectedPublicKey?.toBuffer(),
+          ],
+          program?.programId
+        );
+
+
+      const open_orders = await program.account.openOrders.fetch(
+          openOrdersPda
+      );
+
+      open_orders.orders.forEach((element:anchor.BN,oo_index:number) => {
+        // find the matched order in oo and set owner_slot
+        if(cptyEvent['cpty_orderid'] === element.toString()){
+          owner_slot = oo_index
+        }
+      });
+
+      if(!owner_slot) throw new Error("No owner_slot found!")
+      await finalizeOrder(owner_slot,cptyEvent['idx'],id,new PublicKey(cptyEvent['owner']),connectedPublicKey,data.type as ("Ask" | "Bid"))
+      
     } catch (err) {
       console.log(err);
     }
@@ -57,6 +110,7 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
       </td>
       <td className="px-6 py-4 text-right gap-4">
         <button
+        disabled={!finalisable}
           onClick={handleFinalize}
           className="px-2 py-1 bg-purple-500 rounded font-medium disabled:opacity-50 hover:scale-105 duration-200 active:scale-100"
         >

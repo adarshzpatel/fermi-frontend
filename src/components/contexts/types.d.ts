@@ -22,10 +22,13 @@ type GlobalContextType = {
     maxNativePcQty: anchor.BN
   ) => void;
   finalizeOrder: ( 
-    slot1:number,
-    slot2:number,
-    owner:PublicKey
-  ) => void
+    owner_slot:number,
+    cpty_event_slot:number,
+    orderId:string,
+    authority_cpty:PublicKey,
+    owner:PublicKey,
+    owner_side:'Ask' | "Bid"
+  ) => Promise<void> | unknown
 };
 
 export type OrderItem = {

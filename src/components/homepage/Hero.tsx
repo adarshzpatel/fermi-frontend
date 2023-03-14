@@ -37,13 +37,6 @@ Welcome to <br/> <span className="font-bold bg-gradient-to-r from-fuchsia-600 vi
                   Trade now 
                   <FiArrowRight className="group-hover:translate-x-2 duration-200 ease-out"/>
                 </Link>
-                <a
-                  href="#"
-                  className="text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Learn more
-                  <span aria-hidden="true">→</span>
-                </a>{" "}
               </div>
             </div>
 

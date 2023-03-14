@@ -63,7 +63,7 @@ export const GlobalContext = createContext<GlobalContextType>({
   createNewAsk: () => {
     return;
   },
-  finalizeOrder: () => {return}
+  finalizeOrder: () => {}
 });
 
 type Props = {
@@ -100,26 +100,10 @@ export const GlobalStateProvider = ({ children }: Props) => {
   }, [connection, anchorWallet]);
 
 
-  const finalizeOrder = async (slot1: number, slot2: number,owner:PublicKey) => {
+  const finalizeOrder = async (owner_slot:number,cpty_event_slot:number,orderId:string,authority_cpty:PublicKey,owner:PublicKey,owner_side:"Ask"|"Bid") => {
     // slot is the index number for the matached order to event queue
     if(!connectedPublicKey || !program || !signTransaction) throw new Error("No connected account found !");
-    const authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(
-      new anchor.web3.PublicKey(coinMint),
-      connectedPublicKey,
-      false
-    );
-    let openOrdersPda;
-    let openOrdersPdaBump;
 
-    [openOrdersPda, openOrdersPdaBump] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from("open-orders", "utf-8"),
-          new anchor.web3.PublicKey(marketPda).toBuffer(),
-          connectedPublicKey.toBuffer(),
-        ],
-        program?.programId
-      );
 
     let openOrdersCounterpartyPda;
     let openOrdersCounterpartyPdaBump ;
@@ -133,8 +117,8 @@ export const GlobalStateProvider = ({ children }: Props) => {
       program?.programId
     );
 
-    const finalizeTx = await program?.methods
-      .finaliseMatches(slot1, slot2, new anchor.BN(0), connectedPublicKey)
+    //@ts-ignore
+    const finalizeTx = await program?.methods.finaliseMatches(owner_slot, cpty_event_slot, orderId,authority_cpty,owner,owner_side)
       .accounts({
         reqQ: new anchor.web3.PublicKey(reqQPda),
         asks: new anchor.web3.PublicKey(asksPda),
@@ -161,7 +145,12 @@ export const GlobalStateProvider = ({ children }: Props) => {
     toast.success("Signed Tx");
     const signature = await sendTransaction(signedTx, connection);
     console.log("Tx sent : " + signature);
-
+    await connection.confirmTransaction({
+      blockhash:latestBlockhash.blockhash,
+      lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+      signature
+    })
+    toast.success("Order finalized !!")
     try {
     } catch (err) {
       console.log(err);
@@ -334,6 +323,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
       getAsks();
       getOpenOrders();
     } catch (err) {
+      toast("Insufficient Balance ")
       console.log(err);
     }
   };
@@ -400,6 +390,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
       toast.success("Tx confirmed!")
       getBids();
     } catch (err) {
+      toast("Insufficient Balance ")
       console.log(err);
     }
   };

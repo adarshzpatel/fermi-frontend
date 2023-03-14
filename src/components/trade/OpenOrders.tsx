@@ -1,6 +1,4 @@
-import { OpenOrderItem as OpenOrderType, OrderItem } from "@components/contexts/types";
 import GradientCard from "@components/ui/GradientCard";
-import React, { useEffect, useState } from "react";
 import { useGlobalState } from "src/hooks/useGlobalState";
 import OpenOrdersItem from "./OpenOrderItem";
 
