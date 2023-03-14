@@ -279,7 +279,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
 
 
       const orderTx = await program.methods
-        .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
+        .newOrder({ ask: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
           limit: {},
         })
         .accounts({
