@@ -5,11 +5,10 @@ type GlobalContextType = {
   program: Program<SimpleSerum> | null;
   bids: Bids;
   asks: Asks;
-  openOrders: OpenOrders;
-  eventQ: EventQueue;
+  openOrders: OpenOrderItem[] | null;
+  eventQ: any;
   balances: Balances;
   getOpenOrders: () => void;
-  getEventQ: () => void;
   getBids: () => void;
   getAsks: () => void;
   createNewAsk: (
@@ -49,7 +48,7 @@ export type EventQueueItem = {
 export type OpenOrderItem = {
   price?: string;
   orderId?: anchor.BN;
-  type?: "ask" | "bid";
+  type: "Ask" | "Bid";
   qty?: string;
   owner?:string 
   ownerSlot?:string

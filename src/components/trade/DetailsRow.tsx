@@ -16,7 +16,7 @@ const StatItem = ({title,value}:StatItemProps) => {
 }
 
 const DetailsRow = (props: Props) => {
-  const [current,setCurrent] = useState<string>("SOL/USDC") 
+  const [current,setCurrent] = useState<string>("wSOL/USDC") 
   const {balances} = useGlobalState()
 
   return (
@@ -24,8 +24,8 @@ const DetailsRow = (props: Props) => {
         <div className='flex-1'>
         <PairSelector value={current} onChange={setCurrent}/>
         </div>
-        <StatItem title="USDC Balance" value={balances?.nativePcFree}/>
-        <StatItem title="SOL Balance" value={balances?.nativeCoinTotal}/>
+        <StatItem title="USDC Balance" value={(Number(balances?.nativePcTotal)/1000000).toFixed(2)}/>
+        <StatItem title="SOL Balance" value={(Number(balances?.nativeCoinTotal)/1000000).toFixed(2)}/>
     </div>
   )
 }

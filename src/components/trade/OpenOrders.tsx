@@ -13,7 +13,7 @@ const OpenOrders = (props: Props) => {
     <GradientCard cls="col-span-3">
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-200 ">
-          <thead className="text-xs text-gray-200 uppercase bg-gray-900 ">
+          <thead className="text-xs border-b border-b-cyan-900 text-gray-200 uppercase bg-gray-900 ">
             <tr>
               <th scope="col" className="px-6 py-3">
                 Open Orders
@@ -25,17 +25,18 @@ const OpenOrders = (props: Props) => {
                 Price
               </th>
               <th scope="col" className="px-6 py-3">
-                <span className="sr-only">Edit</span>
+                <span className="sr-only">Cancel</span>
+              </th>
+              <th scope="col" className="px-6 py-3">
+                <span className="sr-only">Finalize</span>
               </th>
             </tr>
           </thead>
           <tbody>
-            {openOrders
-              ?.filter((item) => item.price !== "0.00")
-              ?.map((item, idx) => (
+            {openOrders?.map((item, idx) => (
                 <OpenOrdersItem
-                  data={item}
-                  key={`order-${item?.orderId}`}
+                  id={item}
+                  key={`open_order-${item}`}
                 />
               ))}
           </tbody>

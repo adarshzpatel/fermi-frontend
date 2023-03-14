@@ -5,12 +5,11 @@ import {
 } from "@solana/wallet-adapter-react";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { getProgram, getProvider } from "@utils/program";
-
+import {useCollection, useCollectionData} from "react-firebase-hooks/firestore"
 import {
   Asks,
   Balances,
   Bids,
-  EventQueue,
   GlobalContextType,
   OpenOrderItem,
   OpenOrders,
@@ -18,7 +17,7 @@ import {
 } from "./types";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
-import { priceFromOrderId, timestampFromOrderId } from "@utils/program";
+import { priceFromOrderId } from "@utils/program";
 import {
   asksPda,
   bidsPda,
@@ -32,6 +31,9 @@ import {
 } from "@utils/constants";
 import { toast } from "react-hot-toast";
 import { PublicKey } from "@solana/web3.js";
+import { collection } from "@firebase/firestore";
+import { db } from "src/db/firebase";
+import { saveEventToDb } from "@utils/events";
 
 export const GlobalContext = createContext<GlobalContextType>({
   program: null,
@@ -51,9 +53,7 @@ export const GlobalContext = createContext<GlobalContextType>({
   getBids: () => {
     return;
   },
-  getEventQ: () => {
-    return;
-  },
+
   getOpenOrders: () => {
     return;
   },
@@ -78,10 +78,11 @@ export const GlobalStateProvider = ({ children }: Props) => {
   const anchorWallet = useAnchorWallet();
   const [asks, setAsks] = useState<Asks>([]);
   const [bids, setBids] = useState<Bids>([]);
-  const [openOrders, setOpenOrders] = useState<OpenOrders>([]);
-  const [eventQ, setEventQ] = useState<EventQueue>([]);
+  const [openOrders, setOpenOrders] = useState<any>([]);
   const [balances, setBalances] = useState<Balances>({} as Balances);
-
+  const [eventQ,eventQLoading,eventQerror] = useCollectionData(
+    collection(db,'events')
+  )
   const {
     publicKey: connectedPublicKey,
     sendTransaction,
@@ -98,31 +99,6 @@ export const GlobalStateProvider = ({ children }: Props) => {
     }
   }, [connection, anchorWallet]);
 
-  const getEventQ = async () => {
-    try {
-      if (!program) throw new Error("No program found!!");
-      // await initializeMarket(program);
-      const eventQResponse = await program.account.eventQueue.fetch(
-        new anchor.web3.PublicKey(eventQPda)
-      );
-
-      setEventQ(
-        (eventQResponse?.buf as any[])?.map((item) => {
-          const price = Number((BigInt(item?.orderId.toString()) >> BigInt(64)).toString()).toFixed(2);
-          return {
-            ...item,
-            price,
-            nativeQtyPaid: item?.nativeQtyPaid.toString(),
-            nativeQtyReleased: item?.nativeQtyReleased.toString(),
-            orderId: item?.orderId.toString(),
-            owner: item?.owner.toString(),
-          } as const;
-        })
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const finalizeOrder = async (slot1: number, slot2: number,owner:PublicKey) => {
     // slot is the index number for the matached order to event queue
@@ -193,12 +169,8 @@ export const GlobalStateProvider = ({ children }: Props) => {
   };
   const getOpenOrders = async () => {
     try {
-      if (!program || !connectedPublicKey || bids?.length === 0 || asks?.length === 0) return
-      const authorityPCTokenAccount = await spl.getAssociatedTokenAddress(
-        new anchor.web3.PublicKey(pcMint),
-        connectedPublicKey,
-        false
-      );
+      if (!program || !connectedPublicKey) return 
+    
       let openOrdersPda;
       let openOrdersPdaBump;
       [openOrdersPda, openOrdersPdaBump] =
@@ -222,41 +194,28 @@ export const GlobalStateProvider = ({ children }: Props) => {
         nativePcTotal: openOrdersResponse.nativePcTotal.toString(),
       });
 
-      const eventQResponse = await program.account.eventQueue.fetch(
-        new anchor.web3.PublicKey(eventQPda)
-      );
-
       let ids = openOrdersResponse?.orders.map((item) => {
         return item.toString();
       });
 
       // remove zero value 
       ids = ids.filter((item) => item !== "0");
-      // check
+      // // match with eventQueue
+      // const orders = ids.map((idx) => {
+      //   let match:OrderItem | undefined; 
+      //   match = bids?.find((b)=>b.orderId === idx)
+      //   if(match){
 
-      let _orders:OpenOrderItem[] = ids.map((idx)=>{
-        let matched:OrderItem | undefined =  bids?.find(item=>item.orderId === idx)
-        if(matched){
-          return {
-            orderId:matched?.orderId,
-            price: matched?.price,
-            qty: matched?.qty,
-            type: "bid"
-          } as OpenOrderItem
-        }
-        // if got from ask
-        matched = asks?.find(item=>item.orderId === idx)
-        return {
-          orderId:matched?.orderId,
-          price: matched?.price,
-          qty: matched?.qty,
-          type: "ask"
-        }
-      })
-      _orders = _orders.filter(item=>item.orderId !== undefined)
-      setOpenOrders(_orders)
-    } catch (err) {
-      console.log(err);
+      //     return {...match,type:"Bid",owner:match?.owner.toString(),orderId:match?.orderId}
+      //   }
+      //   match = asks?.find(a => a.orderId === idx)
+      //   if(!match) return
+      //   return {...match,type:"Ask",owner:match?.owner.toString(),orderId:match?.orderId}
+      // })
+      // console.log(orders);
+      setOpenOrders(ids)
+    } catch (err:any) {
+      console.log(err.toString()?.split(" "));
     }
   };
 
@@ -277,6 +236,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
           } as const;
         })
       );
+
     } catch (err) {
       console.log(err);
     }
@@ -331,6 +291,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
           program.programId
         );
 
+
       const orderTx = await program.methods
         .newOrder({ bid: {} }, limitPrice, maxCoinQty, maxNativePcQty, {
           limit: {},
@@ -363,6 +324,15 @@ export const GlobalStateProvider = ({ children }: Props) => {
       toast.success("Signed Tx");
       const signature = await sendTransaction(signedTx, connection);
       console.log("Tx sent : " + signature);
+      await connection.confirmTransaction({
+        blockhash:latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+        signature
+      })
+      await saveEventToDb(signature,connection)
+      toast.success("Tx confirmed!")
+      getAsks();
+      getOpenOrders();
     } catch (err) {
       console.log(err);
     }
@@ -422,7 +392,13 @@ export const GlobalStateProvider = ({ children }: Props) => {
       toast.success("Signed Tx");
       const signature = await sendTransaction(signedTx, connection);
       console.log("Tx sent : " + signature);
-
+      await connection.confirmTransaction({
+        blockhash:latestBlockhash.blockhash,
+        lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+        signature
+      })
+      toast.success("Tx confirmed!")
+      getBids();
     } catch (err) {
       console.log(err);
     }
@@ -430,31 +406,16 @@ export const GlobalStateProvider = ({ children }: Props) => {
 
   useEffect(() => {
     if (program) {
-      getEventQ();
       getBids();
       getAsks();
     }
   }, [program]);
   
   useEffect(()=>{
-    getOpenOrders();
-  },[bids,asks])
+    if(connectedPublicKey && program && eventQ) getOpenOrders();
+  },[connectedPublicKey,program,eventQ])
 
-  useEffect(() => {
-    // console.log("open orders", openOrders);
-  }, [openOrders]);
 
-  useEffect(() => {
-    // console.log("eventQ", eventQ);
-  }, [eventQ]);
-
-  useEffect(() => {
-    // console.log("bids", bids);
-  }, [bids]);
-
-  useEffect(() => {
-    // console.log("asks", asks);
-  }, [asks]);
 
   return (
     <GlobalContext.Provider
@@ -468,7 +429,6 @@ export const GlobalStateProvider = ({ children }: Props) => {
         getAsks,
         getBids,
         getOpenOrders,
-        getEventQ,
         createNewAsk,
         createNewBid,
         finalizeOrder

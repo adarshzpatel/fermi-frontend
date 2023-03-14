@@ -13,7 +13,7 @@ type Props = {
   onChange:Dispatch<SetStateAction<string>>
 }
 const itemList = [
-  "SOL/USDC",
+  "wSOL/USDC",
 ]
 const PairSelector = ({value,onChange}: Props) => {
  

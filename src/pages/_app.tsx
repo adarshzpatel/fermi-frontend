@@ -11,6 +11,7 @@ import {
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import { Toaster } from "react-hot-toast";
 import { GlobalStateProvider } from "@components/contexts/global";
+import firebase_app from "src/db/firebase";
 
 const RPC_ENDPOINT =
   "https://solana-devnet.g.alchemy.com/v2/3Ryr3JTOoA9OXvc_5lpw5gn2YOZ-ukJG";

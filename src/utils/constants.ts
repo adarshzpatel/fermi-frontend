@@ -1,0 +1,12 @@
+export const PROGRAM_ADDRESS = "TtN7ndtaUUBWvkXzt5P8cSngmqLcbcMyqYyMbMsWxGN"
+export const openOrdersPda = "CTYgJrSTjNzwrw2xbXbByLsLxbwx8TW9hPwUMP342iPz";
+export const marketPda = "CH1ShvN6dJBwBkCkMQZBDYwBwMZSRcqKG58dKwTsasnm";
+export const coinVault = "ENTD4x86NQQLHzBghd3stgvUba6vN2KMggeWCpy652ok";
+export const pcVault = "8Gr3U99rCfCp6Zm7YDUgXSbwLzsvGwjGKExuz8tJo73U";
+export const coinMint = "2e6w1HPn7aVsJAJqcKneArJJpyTSc8Ao7xsmWNhfSXGP";
+export const pcMint = "7L83x9PPQYhtjTbArcksohehu6rrJ6tgqv14wSfaVATh";
+export const payer = "9ux9npzs66zjBALrCwPBWd7ZrRkidqj7X3JiBxPVzcBH";
+export const bidsPda = "8LhkzhPWt4utRozwGcfNUHwA5Xk4nr5jcn7X9rKzZhFj";
+export const asksPda = "ENWJYJ8eYkMQn4dBPVW1xBo6Y4aTDQGDtR3LZrQttz3Z";
+export const reqQPda = "FkHkszJMq2ZPgBKra53FWrhYRXF7FE1zkpg7q5CNtT5a";
+export const eventQPda = "CBpdxxa1D4FhsGzXjLW1QKpLD5nJ9mfuZaPB3TP27nhu";

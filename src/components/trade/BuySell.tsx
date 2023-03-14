@@ -22,7 +22,7 @@ const BuySell = (props: Props) => {
     e.preventDefault();
     const limitPrice = new anchor.BN(Number(price));
     const maxCoinQty = new anchor.BN(Number(size));
-    const maxNativePcQty = new anchor.BN(Number(size)).mul(
+    const maxNativePcQty = new anchor.BN(Number(Math.floor(price/size))).mul(
       new anchor.BN(1000000)
     );
 
@@ -36,7 +36,7 @@ const BuySell = (props: Props) => {
   return (
     <GradientCard>
       {/* BUY / SELL */}
-      <h6 className=" p-4 font-bold text-center text-xl">SOL-USDC</h6>
+      <h6 className=" p-4 font-bold text-center text-xl">wSOL-USDC</h6>
       <div className="bg-gray-800 font-bold text-center gap-1 p-1 grid grid-cols-2 ">
         <button
           onClick={() => setState(Switch.BID)}
@@ -79,9 +79,9 @@ const BuySell = (props: Props) => {
         />
         <Input
           readOnly
-          label="Quantity(amount of SOL)"
+          label="Quantity(amount of wSOL)"
           labelClassNames="text-sm"
-          value={size}
+          value={(price/size).toFixed(4)}
           type="number"
           className="opacity-50"
         />
