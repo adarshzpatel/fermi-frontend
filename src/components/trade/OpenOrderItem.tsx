@@ -4,9 +4,7 @@ import { useGlobalState } from "src/hooks/useGlobalState";
 import * as anchor from "@project-serum/anchor";
 import { eventQPda, marketPda } from "@utils/constants";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { resourceUsage } from "process";
 import { PublicKey } from "@solana/web3.js";
-import { toast } from "react-hot-toast";
 
 export const OpenOrdersItem = ({ id }: { id: string }) => {
   const [finalisable, setFinalisable] = useState(false);

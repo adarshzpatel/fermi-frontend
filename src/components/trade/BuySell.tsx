@@ -22,7 +22,7 @@ const BuySell = (props: Props) => {
     e.preventDefault();
     const limitPrice = new anchor.BN(Number(price));
     const maxCoinQty = new anchor.BN(Number(size));
-    const maxNativePcQty = new anchor.BN(Number(Math.floor(price/size))).mul(
+    const maxNativePcQty = new anchor.BN(Number(Math.floor(size/price))).mul(
       new anchor.BN(1000000)
     );
 
@@ -81,7 +81,7 @@ const BuySell = (props: Props) => {
           readOnly
           label="Quantity(amount of wSOL)"
           labelClassNames="text-sm"
-          value={(price/size).toFixed(4)}
+          value={(size/price).toFixed(4)}
           type="number"
           className="opacity-50"
         />
