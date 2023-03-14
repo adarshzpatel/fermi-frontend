@@ -33,10 +33,9 @@ export const saveEventToDb = async (
         temp = {};
       }
     });
-    console.log(events)
+    console.log({events})
     events.forEach(async (item)=>{
-      // console.log(item)
-      await setDoc(doc(db,"events",item?.idx),item).then(()=>console.log(`event with id ${item?.idx} saved!`))
+      await setDoc(doc(db,"events",item?.idx),item).then(()=>console.log(`event with id ${item?.idx} saved!`)).catch((err)=>console.log(err))
     })
   } catch (err) {
     console.log(err);
