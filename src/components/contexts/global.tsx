@@ -385,7 +385,8 @@ export const GlobalStateProvider = ({ children }: Props) => {
         signature
       })
       toast.success("Tx confirmed!")
-      getBids();
+      await saveEventToDb(signature,connection)
+      getAsks();
     } catch (err) {
       toast("Insufficient Balance ")
       console.log(err);
@@ -404,7 +405,9 @@ export const GlobalStateProvider = ({ children }: Props) => {
   },[connectedPublicKey,program,eventQ])
 
 
-
+  useEffect(()=>{
+    console.log({eventQ})
+  },[eventQ])
   return (
     <GlobalContext.Provider
       value={{

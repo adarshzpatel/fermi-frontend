@@ -16,13 +16,14 @@ const BuySell = (props: Props) => {
   const [type, setType] = useState("Limit");
   const [price, setPrice] = useState<number>(0);
   const [size, setSize] = useState<number>(0);
+  const [quantity,setQuantity] = useState<number>(0)
   const { createNewBid, createNewAsk } = useGlobalState();
 
   const createNewOrder = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const limitPrice = new anchor.BN(Number(price));
     const maxCoinQty = new anchor.BN(Number(size));
-    const maxNativePcQty = new anchor.BN(Number(Math.floor(size/price))).mul(
+    const maxNativePcQty = new anchor.BN(Number(quantity)).mul(
       new anchor.BN(1000000)
     );
 
@@ -78,12 +79,12 @@ const BuySell = (props: Props) => {
           onChange={(e) => setSize(Number(e.target.value))}
         />
         <Input
-          readOnly
           label="Quantity(amount of wSOL)"
           labelClassNames="text-sm"
-          value={(size/price).toFixed(4)}
+          value={quantity}
+          onChange={(e) => setQuantity(Number(e.target.value))}
           type="number"
-          className="opacity-50"
+
         />
         {/* <div className="col-span-2 flex mt-2 items-center justify-center gap-1.5  text-xs rounded-lg bg-gray-700">
           <button type="button" className="hover:bg-gray-800 p-2">10%</button>

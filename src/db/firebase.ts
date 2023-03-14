@@ -14,7 +14,6 @@ const firebaseConfig = {
 // Initialize Firebase
 let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-console.log("firebase",firebase_app)
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(firebase_app);
 
