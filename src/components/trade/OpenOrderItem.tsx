@@ -24,7 +24,7 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
   const handleFinalize = async () => {
     try {
       if (!eventQ) throw new Error("No event queue found");
-      console.log("Let's finalize boi")
+      console.log("Let's finalize boi",id)
     } catch (err) {
       console.log(err);
     }

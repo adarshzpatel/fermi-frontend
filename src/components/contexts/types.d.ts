@@ -5,7 +5,7 @@ type GlobalContextType = {
   program: Program<SimpleSerum> | null;
   bids: Bids;
   asks: Asks;
-  openOrders: OpenOrderItem[] | null;
+  openOrders: string[] | null;
   eventQ: any;
   balances: Balances;
   getOpenOrders: () => void;
