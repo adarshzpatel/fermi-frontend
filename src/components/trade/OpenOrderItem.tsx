@@ -24,10 +24,15 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
   useEffect(()=>{
     // check if it is finalizable or not
     eventQ?.forEach((event:any) => {
-      const isValidMatch = event['maker'] === 'true' || event['cpty_orderid'] !== undefined
+      //const isValidMatch = event['maker'] === 'true' || event['cpty_orderid'] !== undefined
+      const isValidMatch = true
       if(isValidMatch){
-        const isFinalisable = event['cpty_orderid'] === id
+        const isFinalisable = event['cpty_orderid'] === id //|| event['orderid'] === id
+        //const isFinalisable = false
+        console.log(event['cpty_orderid'])
         if(isFinalisable) {
+          console.log("FINALISE NOW!!!")
+
           setFinalisable(true)
           setCptyEvent(event)
         }
@@ -44,10 +49,10 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
     try {
       if (!eventQ) throw new Error("No event queue found");
       if(!connectedPublicKey ) throw new Error("No connected wallet found !")
-      // get owner_slot from the open orders index 
+      // get owner_slot from the open orders index
       // get event_slot from eventQ
-      let owner_slot 
-      let cpty_event_slot; 
+      let owner_slot
+      let cpty_event_slot;
 
       let openOrdersPda;
       let openOrdersPdaBump;
@@ -75,7 +80,7 @@ export const OpenOrdersItem = ({ id }: { id: string }) => {
 
       if(!owner_slot) throw new Error("No owner_slot found!")
       await finalizeOrder(owner_slot,cptyEvent['idx'],id,new PublicKey(cptyEvent['owner']),connectedPublicKey,data.type as ("Ask" | "Bid"))
-      
+
     } catch (err) {
       console.log(err);
     }
