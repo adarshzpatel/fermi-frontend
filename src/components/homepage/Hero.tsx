@@ -22,19 +22,17 @@ const Hero = (props: Props) => {
           <div>
             <div className="max-w-xl lg:p-10">
               <div>
-                <p className="text-3xl font-bold tracking-tighter  text-white sm:text-6xl">
-                  I am a short heading
+                <p className="text-3xl font-semibold tracking-tighter  text-white sm:text-6xl">
+Welcome to <br/> <span className="font-bold bg-gradient-to-r from-fuchsia-600 via-cyan-400 to-emerald-500 text-transparent bg-clip-text"> Fermi DEX</span>
                 </p>
-                <p className="max-w-xl md:text-xl mt-4 text-base tracking-tight text-gray-400">
-                  Use this paragraph to share information about your company or
-                  products. Make it engaging and interesting, and showcase your
-                  brand{"'"}s personality. Thanks for visiting our website!
+                <p className="max-w-xl md:text-2xl mt-4 text-base tracking-tight text-gray-300 ">
+                The portal to a new dimension of on-chain liquidity abstraction and just-in-time order settlement.
                 </p>{" "}
               </div>
               <div className="flex flex-col gap-3 mt-10 sm:flex-row">
                 <Link
                   href="/trade"
-                  className="flex hover: gap-2 items-center bg-fuchsia-500 hover:scale-105 active:scale-100 duration-200 ease-out act font-medium text-xl group  py-4 px-8 rounded-xl"
+                  className="flex hover: gap-2 items-center bg-gradient-to-tr from-fuchsia-600  to-cyan-400 hover:scale-105 active:scale-100 duration-200 ease-out act font-medium text-xl group  py-4 px-8 rounded-xl"
                 >
                   Trade now 
                   <FiArrowRight className="group-hover:translate-x-2 duration-200 ease-out"/>
@@ -56,7 +54,6 @@ const Hero = (props: Props) => {
                 <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
                   <div className="h-full overflow-hidden w-44 lg:opacity-100 sm:opacity-0">
                     <img
-                      alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"
                       src={images[0]}
                       decoding="async"
@@ -67,7 +64,6 @@ const Hero = (props: Props) => {
                   </div>
                   <div className="h-full overflow-hidden w-44">
                     <img
-                      alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"
                       src={images[1]}
                       decoding="async"
@@ -83,7 +79,6 @@ const Hero = (props: Props) => {
                   <div className="bg-fuchsia-600/25 absolute blur-3xl bottom-40 left-0 z-[-1] h-56 w-56"/>
                   <div className="h-full  overflow-hidden w-44">
                     <img
-                      alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"
                       src={images[2]}
                       decoding="async"
@@ -94,7 +89,6 @@ const Hero = (props: Props) => {
                   </div>
                   <div className="h-full overflow-hidden w-44">
                     <img
-                      alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"
                       src={images[4]}
                       decoding="async"
@@ -105,7 +99,6 @@ const Hero = (props: Props) => {
                   </div>
                   <div className="h-full overflow-hidden w-44">
                     <img
-                      alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"
                       src={images[5]}
                       decoding="async"
@@ -118,7 +111,6 @@ const Hero = (props: Props) => {
                 <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
                   <div className="h-full overflow-hidden w-44">
                     <img
-                      alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"
                       src={images[6]}
                       decoding="async"
@@ -129,7 +121,6 @@ const Hero = (props: Props) => {
                   </div>
                   <div className="h-full overflow-hidden w-44">
                     <img
-                      alt="Lexingtøn thumbnail"
                       className="object-cover shadow-lg border-[1px] border-white/10"
                       src={images[7]}
                       decoding="async"
