@@ -12,7 +12,7 @@ import { PROGRAM_ADDRESS } from "./constants";
 import {IDL,SimpleSerum} from "../idl/simple_serum"
 
 export const priceFromOrderId = (orderId:anchor.BN) => {
-  return Number((BigInt(orderId.toString()) >> BigInt(64)).toString()).toFixed(2);
+  return Number((BigInt(orderId ? orderId?.toString() : 0) >> BigInt(64)).toString()).toFixed(2);
 }
 
 export const timestampFromOrderId = (orderId:anchor.BN) => {

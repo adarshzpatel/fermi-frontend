@@ -9,7 +9,7 @@ export const saveEventToDb = async (
   try {
     let txDetails = await connection.getParsedTransaction(signature);
     let txLog: any = txDetails?.meta?.logMessages;
-    const timestamp = (new Date()).getTime()
+    const timestamp = new Date().getTime();
     const logString: string = txLog.join("\n");
     const regex = new RegExp(/(event\.[a-zA-Z_]+):\s*(\S+)/g);
     let matched = logString.match(regex);
@@ -33,15 +33,18 @@ export const saveEventToDb = async (
         temp = {};
       }
     });
-    console.log({events})
-    events.forEach(async (item)=>{
+    console.log({ events });
+    events.forEach(async (item) => {
       try {
-      await setDoc(doc(db,"events",item?.idx),item).then(()=>console.log(`event with id ${item?.idx} saved!`)).catch((err)=>console.log(err))
-  // Your statement here
-} catch (error) {
-  // Handle the error here
-}
-    })
+        await setDoc(doc(db, "events", item?.idx), item)
+          .then(() => console.log(`event with id ${item?.idx} saved!`))
+          .catch((err) => console.log(err));
+        // Your statement here
+      } catch (error) {
+        // Handle the error here
+        console.log("Failed to add to db");
+      }
+    });
   } catch (err) {
     console.log(err);
   }

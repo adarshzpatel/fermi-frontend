@@ -211,7 +211,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
       // console.log(orders);
       setOpenOrders(ids)
     } catch (err:any) {
-      console.log(err.toString()?.split(" "));
+      console.log(err);
     }
   };
 
@@ -425,7 +425,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
         bids,
         asks,
         balances,
-        eventQ,
+        eventQ: eventQerror || eventQLoading ? [] : eventQ,
         openOrders,
         getAsks,
         getBids,

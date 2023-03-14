@@ -42,7 +42,7 @@ const Orderbook = (props: Props) => {
         <div className="pb-4 font-bold text-center text-xl flex justify-between">
           Orderbook
           <div className="text-green-500 flex items-center justify-center gap-2  ">
-            {priceFromOrderId(eventQ[0].order_id)}
+            {priceFromOrderId(eventQ[0]?.order_id)}
           </div>
         </div>
         <div className="flex items-center font-bold justify-between text-sm mt-2 text-gray-500">
