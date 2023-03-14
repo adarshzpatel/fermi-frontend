@@ -23,7 +23,7 @@ export const saveEventToDb = async (
       key = key.substring(0, key.length - 1);
       const value = it.split(" ")[1];
       temp[key] = value;
-      // check if valid event 
+      // check if valid event
       // const hasNativeQtyPaid = "native_qty_paid" in temp;
 
       // if (!hasNativeQtyPaid) return;
@@ -35,10 +35,14 @@ export const saveEventToDb = async (
     });
     console.log({events})
     events.forEach(async (item)=>{
+      try {
       await setDoc(doc(db,"events",item?.idx),item).then(()=>console.log(`event with id ${item?.idx} saved!`)).catch((err)=>console.log(err))
+  // Your statement here
+} catch (error) {
+  // Handle the error here
+}
     })
   } catch (err) {
     console.log(err);
   }
 };
-

@@ -101,15 +101,25 @@ export const GlobalStateProvider = ({ children }: Props) => {
     // slot is the index number for the matached order to event queue
     if(!connectedPublicKey || !program || !signTransaction) throw new Error("No connected account found !");
 
-
+    let openOrdersPda;
+    let openOrdersPdaBump ;
     let openOrdersCounterpartyPda;
     let openOrdersCounterpartyPdaBump ;
+
+    [openOrdersPda,openOrdersPdaBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from("open-orders", "utf-8"),
+        new anchor.web3.PublicKey(marketPda).toBuffer(),
+        owner.toBuffer(),
+      ],
+      program?.programId
+    );
 
     [openOrdersCounterpartyPda,openOrdersCounterpartyPdaBump] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from("open-orders", "utf-8"),
         new anchor.web3.PublicKey(marketPda).toBuffer(),
-        owner.toBuffer(),
+        authority_cpty.toBuffer(),
       ],
       program?.programId
     );
@@ -128,7 +138,7 @@ export const GlobalStateProvider = ({ children }: Props) => {
         eventQ:new anchor.web3.PublicKey(eventQPda),
         market: new anchor.web3.PublicKey(marketPda),
         openOrdersCounterparty: openOrdersCounterpartyPda,
-        openOrdersOwner:owner,
+        openOrdersOwner:openOrdersPda,
       })
       .transaction();
 
